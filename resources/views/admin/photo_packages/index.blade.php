@@ -6,8 +6,8 @@
             <a href="{{ route('photo_packages.create') }}" class="btn btn-success">Add New Item</a>
             <a href="{{ route('produk') }}" target="_blank" class="btn btn-info">View on Landing Page</a>
         </div>
-        <div class="table-responsive">
-            <table class="table">
+        <div class="table-responsive table-scrollable">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Name</th>

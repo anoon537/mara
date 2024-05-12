@@ -19,8 +19,8 @@
                 <input type="text" name="title" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">Image</label>
-                <input type="file" name="image" class="form-control" required>
+                <label for="images" class="form-label">Images</label>
+                <input type="file" name="images[]" class="form-control" multiple required>
             </div>
             <button type="submit" class="btn btn-primary">Add Item</button>
             <a href="{{ route('admin.galery') }}" class="btn btn-secondary">Back</a>

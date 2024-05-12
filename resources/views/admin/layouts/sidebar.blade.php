@@ -44,13 +44,13 @@
         <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.bookings.index' ? 'active' : '' }}">
             <a href="{{ route('admin.bookings.index') }}" class="sidebar-link">
                 <i class="fas fa-calendar-alt"></i>
-                Booking
+                <span>Booking</span>
             </a>
         </li>
         <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.do.index' ? 'active' : '' }}">
             <a href="{{ route('admin.do.index') }}" class="sidebar-link">
                 <i class="fas fa-pen"></i>
-                Direct Order
+                <span>Direct Order</span>
             </a>
         </li>
         <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.reports.index' ? 'active' : '' }}">

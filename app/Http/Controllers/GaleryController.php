@@ -28,17 +28,25 @@ class GaleryController extends Controller
         // Validasi data
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $imagePath = $request->file('image')->store('galery', 'public');
+        // Simpan judul galeri dari form
+        $title = $request->title;
 
-        Galery::create([
-            'title' => $request->input('title'),
-            'image_url' => $imagePath,
-        ]);
+        // Iterasi semua file gambar yang diunggah
+        foreach ($request->file('images') as $image) {
+            // Simpan setiap gambar ke dalam penyimpanan
+            $imagePath = $image->store('gallery/' . $title, 'public');
 
-        return redirect()->route('admin.galery')->with('success', 'Galery item created successfully.');
+            // Simpan informasi galeri ke dalam database
+            Galery::create([
+                'title' => $title,
+                'image_url' => $imagePath,
+            ]);
+        }
+
+        return redirect()->route('admin.galery')->with('success', 'Gallery items added successfully.');
     }
 
     public function edit($id)
@@ -51,26 +59,38 @@ class GaleryController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validasi data
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        // Temukan item galeri yang akan diperbarui
         $galeryItem = Galery::findOrFail($id);
 
-        if ($request->hasFile('image')) {
-            Storage::delete('public/' . $galeryItem->image_url);
+        // Jika ada file gambar baru yang diunggah
+        if ($request->hasFile('images')) {
+            // Hapus gambar lama dari penyimpanan
+            Storage::deleteDirectory('public/' . $galeryItem->title);
 
-            $imagePath = $request->file('image')->store('galery', 'public');
-            $galeryItem->image_url = $imagePath;
+            // Iterasi semua file gambar yang diunggah
+            foreach ($request->file('images') as $image) {
+                // Simpan setiap gambar baru ke dalam penyimpanan
+                $imagePath = $image->store('gallery/' . $request->title, 'public');
+
+                // Simpan informasi galeri ke dalam database
+                Galery::create([
+                    'title' => $request->title,
+                    'image_url' => $imagePath,
+                ]);
+            }
         }
 
-        $galeryItem->update([
-            'title' => $request->input('title'),
-            'image_url' => $galeryItem->image_url,
-        ]);
+        // Perbarui judul item galeri
+        $galeryItem->title = $request->input('title');
+        $galeryItem->save();
 
-        return redirect()->route('admin.galery')->with('success', 'Galery item updated successfully.');
+        return redirect()->route('admin.galery')->with('success', 'Gallery item updated successfully.');
     }
 
     public function destroy($id)

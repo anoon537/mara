@@ -53,4 +53,14 @@ class HomeController extends Controller
     {
         return view('home.galery');
     }
+
+    public function terms()
+    {
+        return view('home.terms');
+    }
+
+    public function howShop()
+    {
+        return view('home.how-shop');
+    }
 }

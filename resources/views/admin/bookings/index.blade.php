@@ -7,7 +7,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="table-responsive">
+        <div class="table-responsive table-scrollable">
             <table class="table table-bordered">
                 <thead style="vertical-align: middle;">
                     <tr>
@@ -106,7 +106,5 @@
                 </tbody>
             </table>
         </div>
-
-        {{ $bookings->links('pagination::bootstrap-5') }}
     </div>
 @endsection

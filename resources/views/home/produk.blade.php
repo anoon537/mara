@@ -15,67 +15,63 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light fixed-top shadow py-lg-0 px-4 px-lg-5 wow fadeIn"
         data-wow-delay="0.1s">
-        @include('layouts.navbar')
+        @include('layouts.navbar') <!-- Navbar -->
     </nav>
     <!-- Navbar End -->
 
-    <!-- Header Start -->
-    <div class="container-fluid hero-header bg-light py-5 my-5">
-        <div class="container py-5">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6">
-                    <nav aria-label="breadcrumb animated slideInDown">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{ route('homepage') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Photo Package</li>
-                        </ol>
-                    </nav>
+    <!-- Detail Paket Foto -->
+    <div class="container mt-5 pt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('homepage') }}" class="text-secondary">Home</a> <!-- Link ke homepage -->
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="text-secondary">Photo Package</span> <!-- Link ke daftar paket foto -->
+                </li>
+            </ol>
+        </nav>
+        <!-- Header End -->
+
+        <!-- Service Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="text-center mx-auto mb-5">
+                    <h1 class="display-6">Explore Our Photo Package</h1>
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- Header End -->
-
-    <!-- Service Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-                <p class="text-Secondary text-uppercase mb-2">Photo Packages</p>
-                <h1 class="display-6 mb-4"></h1>
-            </div>
-
-            <!-- Menampilkan data PhotoPackage -->
-            <div class="row g-3">
-                @foreach ($photoPackages as $package)
-                    <!-- Iterasi melalui daftar paket foto -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="service-item d-flex flex-column bg-white p-3 pb-0">
-                            <div class="position-relative">
-                                <!-- Menampilkan gambar paket foto -->
-                                @if ($package->image_url)
-                                    <a href="{{ route('home.detail', $package->id) }}">
-                                        <img class="img-fluid" src="{{ $package->image_url }}" alt="{{ $package->name }}">
-                                    </a>
-                                @endif
-                                <div class="service-overlay">
-                                    <a class="btn btn-lg-square btn-outline-light rounded-circle"
-                                        href="{{ route('home.detail', $package->id) }}">
-                                        <i class="fa fa-link"></i>
-                                    </a>
+                <div class="row g-3">
+                    @foreach ($photoPackages as $package)
+                        <div class="col-lg-3 col-md-6">
+                            <div class="service-item d-flex flex-column bg-white p-3 pb-0">
+                                <div class="position-relative img-wrapper" style="max-height: 300px; overflow: hidden;">
+                                    @if ($package->image_url)
+                                        <a href="{{ route('home.detail', $package->id) }}">
+                                            <img class="img-fluid img-cover" src="{{ $package->image_url }}"
+                                                alt="{{ $package->name }}">
+                                        </a>
+                                    @endif
+                                    <div class="service-overlay">
+                                        <a class="btn btn-lg-square btn-outline-light rounded-circle"
+                                            href="{{ route('home.detail', $package->id) }}">
+                                            <i class="fa fa-link"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="text-center p-4">
+                                    <!-- Menampilkan nama dan harga paket -->
+                                    <h5>{{ $package->name }}</h5>
+                                    <h5 class="text-muted">Rp. {{ number_format($package->price, 0, ',', '.') }}</h5>
                                 </div>
                             </div>
-                            <div class="text-center p-4">
-                                <!-- Menampilkan nama dan harga paket -->
-                                <h4> {{ $package->name }}</h4>
-                                <p class="text-muted">Rp. {{ number_format($package->price, 0, ',', '.') }}</p>
-                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
+
             </div>
         </div>
+
+        <!-- Service End -->
     </div>
-    <!-- Service End -->
 
     @include('layouts.footer') <!-- Footer -->
 @endsection

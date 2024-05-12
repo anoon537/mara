@@ -10,11 +10,10 @@
         <div class="spinner-grow" role="status"></div>
     </div>
     <!-- Spinner End -->
-
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light fixed-top shadow py-lg-0 px-4 px-lg-5 wow fadeIn"
         data-wow-delay="0.1s">
-        @include('layouts.navbar') <!-- Navbar -->
+        @include('layouts.navbar')
     </nav>
     <!-- Navbar End -->
 
@@ -83,15 +82,16 @@
                             <div class="mb-3">
                                 <label for="user_name">Name</label>
                                 <input type="text" name="user_name" id="user_name" class="form-control"
-                                    value="{{ $user->name }}" readonly> <!-- Readonly -->
+                                    value="{{ isset($user) ? $user->name : '' }}" readonly>
                             </div>
 
                             <!-- Nomor Telepon -->
                             <div class="mb-3">
                                 <label for="user_phone">Phone</label>
                                 <input type="text" name="user_phone" id="user_phone" class="form-control"
-                                    value="{{ $user->phone }}" readonly> <!-- Readonly -->
+                                    value="{{ isset($user) ? $user->phone : '' }}" readonly>
                             </div>
+
 
                             <!-- Tanggal -->
                             <div class="mb-3">
@@ -134,8 +134,5 @@
             </div>
         </div>
     </div>
-
-
-    <!-- Include footer -->
     @include('layouts.footer')
 @endsection

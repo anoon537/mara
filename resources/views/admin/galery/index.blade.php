@@ -6,41 +6,33 @@
             <a href="{{ route('admin.galery.create') }}" class="btn btn-success">Add New Item</a>
             <a href="{{ route('galery') }}" target="_blank" class="btn btn-info">View on Landing Page</a>
         </div>
-        <div class="table-responsive">
-            <table class="table">
-                <thead style="vertical-align: middle;">
-                    <tr>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($galeryItems as $item)
-                        <tr>
-                            <td>
-                                <a href="{{ Storage::url($item->image_url) }}" data-lightbox="galery"
-                                    data-title="{{ $item->title }}">
-                                    <img src="{{ Storage::url($item->image_url) }}" class="img-thumbnail"
-                                        style="max-width: 100px;" alt="{{ $item->title }}">
-                                </a>
-                            </td>
-                            <td>{{ $item->title }}</td>
-                            <td>
-                                <a href="{{ route('admin.galery.edit', $item->id) }}" class="btn btn-primary"><i
-                                        class="fas fa-edit"></i></a>
-                                <form method="POST" action="{{ route('admin.galery.destroy', $item->id) }}"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach ($galeryItems as $item)
+                <div class="col">
+                    <div class="card h-100 img-wrapper" style="max-height: 300px; overflow: hidden;">
+                        <a href="{{ Storage::url($item->image_url) }}" data-lightbox="galery"
+                            data-title="{{ $item->title }}">
+                            <img src="{{ Storage::url($item->image_url) }}" class="card-img-top" alt="{{ $item->title }}">
+                        </a>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ $item->title }}</h5>
+                        <div class="d-flex justify-content-center">
+                            <a href="{{ route('admin.galery.edit', $item->id) }}" class="btn btn-sm btn-primary me-2">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form method="POST" action="{{ route('admin.galery.destroy', $item->id) }}" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this item?');">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 @endsection

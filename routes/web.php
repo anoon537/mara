@@ -28,6 +28,9 @@ Route::get('/photo-package/{id}', [PhotoPackageController::class, 'show'])->name
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/galery', [HomeController::class, 'showGalery'])->name('galery');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/terms-conditions', [HomeController::class, 'terms'])->name('terms-conditions');
+Route::get('/how-to-shop', [HomeController::class, 'howShop'])->name('howShop');
+
 
 //////////////// Profile Route ///////////////////
 Route::middleware('auth')->group(function () {

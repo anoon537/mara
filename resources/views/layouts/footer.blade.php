@@ -29,14 +29,14 @@
             <div class="row g-5">
                 <div class="col-sm-6">
                     <h4 class="text-secondary mb-4">Get In Touch</h4>
-                    <a class="btn btn-link" href="">Contact Us</a>
-                    <a class="btn btn-link" href="">Studio Location</a>
+                    <a class="btn btn-link" href="https://maps.app.goo.gl/q3Gy1DQoeAxv8quV8" target="_.blank">Studio
+                        Location</a>
+                    <a class="btn btn-link" href="{{ route('contact') }}">Contact Us</a>
                 </div>
                 <div class="col-sm-6">
                     <h4 class="text-secondary mb-4">Info</h4>
-                    <a class="btn btn-link" href="">Hot To Shop</a>
-                    <a class="btn btn-link" href="">Terms & Condition</a>
-                    <a class="btn btn-link" href="">Carrer</a>
+                    <a class="btn btn-link" href="{{ route('howShop') }}">Hot To Shop</a>
+                    <a class="btn btn-link" href="{{ route('terms-conditions') }}">Terms & Condition</a>
                 </div>
             </div>
         </div>

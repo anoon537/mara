@@ -27,8 +27,7 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea id="description" name="description" class="form-control" rows="10" cols="50"
-                    placeholder="Enter description, use commas to separate items"></textarea>
+                <textarea id="description" name="description" class="form-control" rows="10" cols="50">{{ $photoPackage->description }}</textarea>
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Image (optional)</label>
@@ -37,5 +36,7 @@
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="{{ route('photo_packages.index') }}" class="btn btn-secondary">Back</a>
         </form>
+
+
     </div>
 @endsection

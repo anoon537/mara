@@ -118,12 +118,10 @@ class AdminController extends Controller
 
         // Pastikan menggunakan with() untuk mengambil relasi `payments`
         $bookings = Booking::with(['user', 'photo_package', 'payments'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(3); // Menggunakan pagination
+            ->orderBy('created_at', 'desc'); // Menggunakan pagination
 
         return view('admin.bookings.index', compact('bookings', 'title'));
     }
-
 
     public function approve($payment_id)
     {

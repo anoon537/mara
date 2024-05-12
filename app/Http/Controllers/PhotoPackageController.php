@@ -15,9 +15,12 @@ class PhotoPackageController extends Controller
     public function index()
     {
         $title = 'Photo Packages';
+
         $photoPackages = PhotoPackage::all();
+
         return view('admin.photo_packages.index', compact('photoPackages', 'title'));
     }
+
 
     public function create()
     {

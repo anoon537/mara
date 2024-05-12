@@ -33,26 +33,48 @@
         <!-- Galeri berdasarkan judul -->
         <div class="container-xxl py-5">
             <div class="container">
-                <div class="text-center mx-auto mb-5" style="max-width: 500px;">
+                <div class="text-center mx-auto mb-5">
                     <h1 class="display-6 mb-0">Explore Our Gallery by Title</h1>
                 </div>
                 @foreach ($galeryByTitle as $key => $items)
                     <!-- Untuk setiap kelompok berdasarkan judul -->
-                    <div class="mb-4"> <!-- Menampilkan judul kelompok -->
-                        <h3 class="text-secondary"> {{ ucfirst($items->first()->title) }} Photo</h3>
-                        <div class="row g-3"> <!-- Menampilkan item dalam kelompok -->
-                            @foreach ($items as $item)
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="project-item">
-                                        <img class="img-fluid" src="{{ Storage::url($item->image_url) }}"
-                                            alt="{{ $item->title }}">
-                                        <a class="project-title h5 mb-0" href="{{ Storage::url($item->image_url) }}"
-                                            data-lightbox="galery" data-title="{{ $item->title }}">
-                                            {{ $item->title }}
-                                        </a>
+                    <div class="mb-4">
+                        <!-- Menampilkan judul kelompok -->
+                        <h3 class="text-secondary">{{ ucfirst($items->first()->title) }} Photo</h3>
+                        <!-- Carousel untuk menampilkan item dalam kelompok -->
+                        <div id="carousel{{ $key }}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @foreach ($items->chunk(4) as $index => $chunk)
+                                    <div class="carousel-item{{ $index === 0 ? ' active' : '' }}">
+                                        <div class="row g-3">
+                                            @foreach ($chunk as $item)
+                                                <div class="col-lg-3 col-md-6">
+                                                    <div class="project-item img-wrapper"
+                                                        style="max-height: 400px; overflow: hidden;">
+                                                        <a href="{{ Storage::url($item->image_url) }}"
+                                                            data-lightbox="gallery" data-title="{{ $item->title }}">
+                                                            <img class="img-fluid"
+                                                                src="{{ Storage::url($item->image_url) }}"
+                                                                alt="{{ $item->title }}">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
+                            <!-- Tombol navigasi Carousel -->
+                            <button class="carousel-control-prev" type="button"
+                                data-bs-target="#carousel{{ $key }}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                data-bs-target="#carousel{{ $key }}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
                     </div>
                 @endforeach
