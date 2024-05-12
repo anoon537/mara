@@ -39,7 +39,6 @@
             </p>
             <p>Jumlah Orang Tambahan: {{ $booking->additional_people }}</p>
             <p>Harga total: Rp {{ number_format($booking->price, 0, ',', '.') }}</p>
-
             <!-- Instruksi pembayaran -->
             <p>Silakan transfer pembayaran ke rekening berikut:</p>
             <ul>
@@ -53,17 +52,24 @@
             <!-- Formulir untuk unggah bukti pembayaran -->
             <form action="{{ route('payment.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="booking_id" value="{{ $booking->id }}"> <!-- Pastikan booking_id disertakan -->
-
+                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                <!-- Pastikan booking_id disertakan -->
                 <div class="mb-3">
-                    <label for="payment_proof" class="form-label">Upload</label>
+                    <label for="payment_option">Pilih Metode Pembayaran:</label><br>
+                    <input type="radio" id="dp" name="payment_option" value="dp" checked>
+                    <label for="dp">DP (50%) - Rp {{ number_format($booking->price * 0.5, 0, ',', '.') }}</label><br>
+                    <input type="radio" id="full" name="payment_option" value="full">
+                    <label for="full">Pembayaran Penuh - Rp
+                        {{ number_format($booking->price, 0, ',', '.') }}</label><br>
+                </div>
+                <div class="mb-3">
+                    <label for="payment_proof" class="form-label">Unggah Bukti Pembayaran</label>
                     <input type="file" name="payment_proof" id="payment_proof" class="form-control" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Unggah Bukti Pembayaran</button>
                 <!-- Tombol untuk mengirim -->
             </form>
-
         </div>
     </div>
 @endsection

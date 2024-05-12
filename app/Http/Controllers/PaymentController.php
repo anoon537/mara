@@ -22,18 +22,31 @@ class PaymentController extends Controller
         $validatedData = $request->validate([
             'booking_id' => 'required|exists:bookings,id',
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'payment_option' => 'required|in:dp,full', // Validasi opsi pembayaran
         ]);
 
         $booking = Booking::findOrFail($validatedData['booking_id']);
-        $total_price = $booking->price;
+
+        // Hitung total harga pembayaran berdasarkan opsi yang dipilih
+        $total_price = $validatedData['payment_option'] === 'dp' ? $booking->price * 0.5 : $booking->price;
+
         $payment = new Payment();
         $payment->booking_id = $validatedData['booking_id'];
         $payment->payment_proof = $validatedData['payment_proof']->store('payment_proofs', 'public');
         $payment->price = $total_price;
+        $payment->payment_option = $validatedData['payment_option']; // Simpan opsi pembayaran
         $payment->save();
 
-        return redirect()->route('payment.history')->with('success', 'Payment received');
+        // Jika pembayaran diterima dengan opsi full atau DP, status booking tetap pending
+        if ($validatedData['payment_option'] === 'full') {
+            $booking->status = 'pending';
+            $booking->save();
+        }
+
+        return redirect()->route('payment.history')->with('success', 'Pembayaran berhasil diterima.');
     }
+
+
 
     public function history()
     {

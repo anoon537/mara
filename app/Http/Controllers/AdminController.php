@@ -112,16 +112,31 @@ class AdminController extends Controller
     }
 
     // BOOKINGS
-    public function indexBookings()
+    public function indexBookings(Request $request)
     {
         $title = 'Bookings';
+        $query = Booking::query();
 
-        // Pastikan menggunakan with() untuk mengambil relasi `payments`
-        $bookings = Booking::with(['user', 'photo_package', 'payments'])
-            ->orderBy('created_at', 'desc'); // Menggunakan pagination
+        // Memeriksa apakah ada parameter pencarian
+        if ($request->has('search')) {
+            // Menambahkan kondisi pencarian berdasarkan booking ID
+            $query->where('id', $request->search);
+        }
+
+        // Mengambil data bookings sesuai dengan query yang sudah dibuat
+        $bookings = $query->with(['user', 'photo_package', 'payments'])
+            ->orderBy('created_at', 'desc');
+
+        // Jika tidak ada input pencarian, tampilkan semua booking
+        if (!$request->has('search')) {
+            $bookings = $bookings->get();
+        } else {
+            $bookings = $bookings->paginate(10); // Jika ada input pencarian, gunakan pagination
+        }
 
         return view('admin.bookings.index', compact('bookings', 'title'));
     }
+
 
     public function approve($payment_id)
     {
@@ -142,11 +157,22 @@ class AdminController extends Controller
     public function complete($id)
     {
         $booking = Booking::findOrFail($id);
+
+        // Simpan harga asli dari paket foto
+        $originalPrice = $booking->photo_package->price;
+
+        // Jika status booking adalah 'completed', kembalikan harga booking ke harga asli paket foto
+        if ($booking->status === 'completed') {
+            $booking->price = $originalPrice;
+        }
+
+        // Ubah status booking menjadi 'completed'
         $booking->status = 'completed';
         $booking->save();
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking marked as completed'); // Redirect
     }
+
 
     public function markPending($id)
     {
@@ -161,7 +187,6 @@ class AdminController extends Controller
     {
         $booking = Booking::findOrFail($id);
         $booking->delete();
-
         return redirect()->route('admin.bookings.index')->with('success', 'User deleted successfully');
     }
 

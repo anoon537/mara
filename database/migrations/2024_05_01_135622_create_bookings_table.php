@@ -19,9 +19,12 @@ class CreateBookingsTable extends Migration
             $table->time('booking_time');
             $table->string('status')->default('pending');
             $table->decimal('price', 10, 2)->nullable();
+            $table->integer('additional_people')->default(0);
             $table->timestamps();
         });
     }
+
+
 
     /**
      * Reverse the migrations.

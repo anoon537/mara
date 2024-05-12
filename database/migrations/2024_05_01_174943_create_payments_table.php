@@ -16,9 +16,11 @@ class CreatePaymentsTable extends Migration
             $table->foreignId('booking_id')->constrained()->onDelete('cascade');
             $table->string('payment_proof');
             $table->decimal('price', 10, 2)->nullable();
+            $table->string('payment_option')->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

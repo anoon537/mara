@@ -22,7 +22,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('homepage') }}">Home</a> <!-- Link ke homepage -->
+                    <a href="{{ route('home') }}" class="text-secondary">Home</a> <!-- Link ke homepage -->
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">History</li> <!-- Nama paket -->
             </ol>
@@ -40,7 +40,6 @@
                             <th>Tanggal Booking</th>
                             <th>Waktu</th>
                             <th>Harga</th>
-                            <th>Jenis Pembayaran</th> <!-- Tambahkan kolom jenis pembayaran -->
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -50,15 +49,20 @@
                                 <td>{{ $payment->booking->photo_package->name }}</td>
                                 <td>{{ $payment->booking->booking_date }}</td>
                                 <td>{{ $payment->booking->booking_time }}</td>
-                                <td>Rp {{ number_format($payment->price, 0, ',', '.') }}</td>
-                                <td>{{ ucfirst($payment->payment_type) }}</td> <!-- Menampilkan jenis pembayaran -->
+                                <td>
+                                    @if ($payment->booking->status === 'completed')
+                                        Rp {{ number_format($payment->booking->price, 0, ',', '.') }}
+                                    @else
+                                        Rp {{ number_format($payment->price, 0, ',', '.') }}
+                                    @endif
+                                </td>
                                 <td>{{ ucfirst($payment->booking->status) }}</td>
                             </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             @endif
         </div>
-
     </div>
 @endsection

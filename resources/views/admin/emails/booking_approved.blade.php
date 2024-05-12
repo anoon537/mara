@@ -53,7 +53,10 @@
                 Tanggal pemesanan: {{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }}
             </p>
             <p class="text-gray-600">
-                Total harga: Rp {{ number_format($booking->price, 2) }}
+                Pembayaran: Rp {{ $booking->payment->payment_option }}
+            </p>
+            <p class="text-gray-600">
+                Total harga: Rp {{ number_format($booking->payment->price, 2) }}
             </p>
         </div>
 

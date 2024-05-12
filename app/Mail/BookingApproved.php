@@ -20,7 +20,7 @@ class BookingApproved extends Mailable
 
     public function build()
     {
-        return $this->subject('Pemesanan Anda Telah Disetujui')
+        return $this->subject('Booking in Mara Studio Approved')
             ->view('admin.emails.booking_approved');
     }
 }
