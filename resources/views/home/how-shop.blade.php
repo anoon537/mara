@@ -15,7 +15,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('homepage') }}" class="text-secondary">Home</a>
+                    <a href="{{ route('home') }}" class="text-secondary">Home</a>
                 </li>
                 <li class="breadcrumb-item">
                     <span class="text-secondary">How to Booking</span>

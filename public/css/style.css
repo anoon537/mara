@@ -12,6 +12,16 @@ body {
     font-style: normal;
 }
 
+.large-img {
+    width: 90%;
+    /* Full width for larger images */
+}
+
+.small-img {
+    width: 45%;
+    /* Half width for smaller images */
+}
+
 .img-cover {
     width: 100%;
     height: auto;

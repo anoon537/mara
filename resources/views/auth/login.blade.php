@@ -64,10 +64,11 @@
                         <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
                             <div class="text-white px-3 py-4 mx-md-4">
                                 <h4 class="mb-4">We are more than just a company</h4>
-                                <p class="small mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat.</p>
+                                <p class="small mb-0">Mara Studio adalah studio kreatif berbasis di Indonesia yang
+                                    berfokus pada menciptakan pengalaman visual luar biasa. Kami menawarkan layanan dari
+                                    desain grafis hingga produksi video, menggabungkan keahlian dan kreativitas untuk
+                                    menghasilkan karya memukau. Dengan tim profesional berpengalaman dan berbakat, kami siap
+                                    menghadirkan solusi kreatif unik sesuai kebutuhan Anda.</p>
                             </div>
                         </div>
                     </div>

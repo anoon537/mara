@@ -27,42 +27,66 @@
                 <li class="breadcrumb-item active" aria-current="page">History</li> <!-- Nama paket -->
             </ol>
         </nav>
-        <div class="container my-5">
-            <h2>History Pembayaran</h2>
+        <div class="container my-5 py-5 rounded shadow-sm">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Purchase History</h2>
+            </div>
 
             @if ($payments->isEmpty())
-                <p>Tidak ada riwayat pembayaran yang ditemukan.</p>
+                <p class="text-center text-muted">make transactions first</p>
             @else
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Paket Foto</th>
-                            <th>Tanggal Booking</th>
-                            <th>Waktu</th>
-                            <th>Harga</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($payments as $payment)
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>{{ $payment->booking->photo_package->name }}</td>
-                                <td>{{ $payment->booking->booking_date }}</td>
-                                <td>{{ $payment->booking->booking_time }}</td>
-                                <td>
-                                    @if ($payment->booking->status === 'completed')
-                                        Rp {{ number_format($payment->booking->price, 0, ',', '.') }}
-                                    @else
-                                        Rp {{ number_format($payment->price, 0, ',', '.') }}
-                                    @endif
-                                </td>
-                                <td>{{ ucfirst($payment->booking->status) }}</td>
+                                <th>No</th>
+                                <th>Photo Package</th>
+                                <th>Date & Time</th>
+                                <th>Price | Payment Option</th>
+                                <th>Status</th>
                             </tr>
-                        @endforeach
-
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($payments as $payment)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $payment->booking->photo_package->name }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($payment->booking->booking_date)->format('d F Y') }} at
+                                        {{ \Carbon\Carbon::parse($payment->booking->booking_time)->format('H:i') }}</td>
+                                    <td>
+                                        @if ($payment->booking->status === 'completed')
+                                            Rp {{ number_format($payment->booking->price, 0, ',', '.') }} |
+                                            {{ $payment->payment_option }}
+                                        @else
+                                            Rp {{ number_format($payment->price, 0, ',', '.') }} |
+                                            {{ $payment->payment_option }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($payment->booking->status == 'waiting for confirmation')
+                                            <span
+                                                class="badge bg-warning text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                            <!-- Kuning untuk pending -->
+                                        @elseif ($payment->booking->status == 'confirmed')
+                                            <span
+                                                class="badge bg-primary text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                            <!-- Biru untuk approved -->
+                                        @elseif ($payment->booking->status == 'completed')
+                                            <span
+                                                class="badge bg-success text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                            <!-- Hijau untuk completed -->
+                                        @else
+                                            <span>{{ ucfirst($payment->booking->status) }}</span>
+                                            <!-- Warna default jika ada status lain -->
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
     </div>
+    @include('layouts.footer')
 @endsection

@@ -12,11 +12,19 @@ use Illuminate\Support\Facades\Auth;
 
 class PhotoPackageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Photo Packages';
+        $photoPackages = PhotoPackage::query();
 
-        $photoPackages = PhotoPackage::all();
+        if ($request->has('search')) {
+            $search = $request->search;
+            $photoPackages->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        $photoPackages = $photoPackages->get();
 
         return view('admin.photo_packages.index', compact('photoPackages', 'title'));
     }
@@ -69,17 +77,21 @@ class PhotoPackageController extends Controller
         ]);
 
         $photoPackage = PhotoPackage::findOrFail($id);
+
         if ($request->hasFile('image')) {
+            // Delete the old image if it exists
             if ($photoPackage->image_url) {
-                Storage::delete('public/' . $photoPackage->image_url);
+                // Convert the URL to a relative path
+                $oldImagePath = str_replace('/storage/', '', $photoPackage->image_url);
+                Storage::disk('public')->delete($oldImagePath);
             }
 
+            // Store the new image and get its URL
             $imagePath = $request->file('image')->store('photo_packages', 'public');
             $photoPackage->image_url = Storage::url($imagePath);
         }
 
         $description = $request->input('description');
-
         if (is_array($description)) {
             $description = json_encode($description);
         }
@@ -88,11 +100,12 @@ class PhotoPackageController extends Controller
             'name' => $request->input('name'),
             'price' => $request->input('price'),
             'description' => $description, // Simpan dalam format JSON
-            'image_url' => $photoPackage->image_url,
+            'image_url' => $photoPackage->image_url, // Update the image_url only if it was changed
         ]);
 
         return redirect()->route('photo_packages.index')->with('success', 'Photo Package updated successfully.');
     }
+
 
     public function edit($id)
     {

@@ -1,7 +1,4 @@
 <header>
-    <h2 class="font-weight-bold">
-        {{ __('Update Password') }}
-    </h2>
     <p class="text-muted">
         {{ __('Ensure your account is using a long, random password to stay secure.') }}
     </p>
@@ -53,10 +50,5 @@
         <button type="submit" class="btn btn-secondary">
             {{ __('Save') }}
         </button>
-
-        @if (session('status') === 'password-updated')
-            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-success text-sm">
-                {{ __('Saved.') }}</p>
-        @endif
     </div>
 </form>

@@ -40,6 +40,24 @@
 <body>
     @yield('content')
 
+    <!-- Modal HTML -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Logout Successful</h5>
+                </div>
+                <div class="modal-body">
+                    You have been successfully logged out.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- External Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
@@ -64,6 +82,14 @@
     <!-- CounterUp.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/counterup/1.0.0/jquery.counterup.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            @if (session('status') === 'logout-success')
+                $('#logoutModal').modal('show');
+            @endif
+        });
+    </script>
 
     @yield('scripts')
 </body>

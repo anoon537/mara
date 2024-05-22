@@ -34,13 +34,14 @@
         <div class="container-xxl py-5">
             <div class="container">
                 <div class="text-center mx-auto mb-5">
-                    <h1 class="display-6 mb-0">Explore Our Gallery by Title</h1>
+                    <h1 class="display-6 mb-0">Explore Our Gallery</h1>
                 </div>
                 @foreach ($galeryByTitle as $key => $items)
                     <!-- Untuk setiap kelompok berdasarkan judul -->
                     <div class="mb-4">
-                        <!-- Menampilkan judul kelompok -->
-                        <h3 class="text-secondary">{{ ucfirst($items->first()->title) }} Photo</h3>
+                        <!-- Menampilkan judul kelompok dengan ID untuk anchor link -->
+                        <h3 id="{{ strtolower($items->first()->title) }}" class="text-secondary">
+                            {{ ucfirst($items->first()->title) }} Photo</h3>
                         <!-- Carousel untuk menampilkan item dalam kelompok -->
                         <div id="carousel{{ $key }}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
@@ -80,6 +81,7 @@
                 @endforeach
             </div>
         </div>
+
     </div>
     @include('layouts.footer') <!-- Footer -->
 @endsection

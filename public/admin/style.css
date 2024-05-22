@@ -8,10 +8,22 @@
 }
 
 .table-scrollable {
-    max-height: 500px;
-    /* Atur tinggi maksimum untuk scrollbar */
+    max-height: 495px;
+    /* Sesuaikan tinggi maksimum yang diinginkan */
     overflow-y: auto;
-    /* Aktifkan scrollbar vertikal */
+    /* Tampilkan scrollbar vertikal jika konten melebihi tinggi maksimum */
+    position: relative;
+    /* Tetapkan posisi relatif */
+}
+
+.table-scrollable thead {
+    position: sticky;
+    top: 0;
+    /* Tetapkan posisi kepala tabel di bagian atas saat discroll */
+    background-color: white;
+    /* Atur latar belakang kepala tabel */
+    z-index: 1;
+    /* Atur indeks z agar kepala tabel muncul di atas konten lain */
 }
 
 a {
@@ -37,8 +49,19 @@ body {
     width: 100%;
     overflow: hidden;
     transition: all 0.35s ease-in-out;
-    background-color: #fff;
+    background-color: #f8f9fa;
     min-width: 0;
+}
+
+.btn {
+    color: #fff;
+    background-color: #6c757d;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.btn:hover {
+    background-color: #495057; /* Change background color on hover */
+    color: #f8f9fa; /* Change text color on hover */
 }
 
 #sidebar {
@@ -46,9 +69,10 @@ body {
     min-width: 70px;
     z-index: 1000;
     transition: all 0.25s ease-in-out;
-    background-color: #0e2238;
+    background-color: #fefeff;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Menambahkan bayangan */
 }
 
 #sidebar.expand {
@@ -73,7 +97,7 @@ body {
 }
 
 .sidebar-logo a {
-    color: #fff;
+    color: #6c757d;
     font-size: 1.15rem;
     font-weight: 600;
 }
@@ -105,7 +129,7 @@ body {
 
 a.sidebar-link {
     padding: 0.625rem 1.625rem;
-    color: #fff;
+    color: #6c757d;
     display: block;
     font-size: 0.9rem;
     white-space: nowrap;
@@ -119,8 +143,8 @@ a.sidebar-link {
 }
 
 a.sidebar-link:hover {
-    background-color: rgba(255, 255, 255, 0.075);
-    border-left: 3px solid #3b7ddd;
+    background-color: #f8f9fa;
+    border-left: 3px solid #6c757d;
 }
 
 .sidebar-item {
@@ -131,7 +155,7 @@ a.sidebar-link:hover {
     position: absolute;
     top: 0;
     left: 70px;
-    background-color: #0e2238;
+    background-color: #6c757d;
     padding: 0;
     min-width: 15rem;
     display: none;
@@ -163,8 +187,8 @@ a.sidebar-link:hover {
 }
 
 .navbar {
-    background-color: #f5f5f5;
-    box-shadow: 0 0 2rem 0 rgba(33, 37, 41, 0.1);
+    background-color: #fefeff;
+    box-shadow: 0 0 3rem 0 rgba(33, 37, 41, 0.3); /* Mengubah ukuran dan opasitas */
 }
 
 .navbar-expand .navbar-collapse {
@@ -185,14 +209,14 @@ a.sidebar-link:hover {
 }
 
 .sidebar-link:hover {
-    color: #000; /* Warna teks saat hover */
-    background-color: #f0f0f0; /* Warna latar belakang saat hover */
+    color: #212529; /* Warna teks saat hover */
+    background-color: #f8f9fa;
 }
 
 .sidebar-item.active .sidebar-link {
-    color: #fff; /* Warna teks tautan aktif */
-    background-color: rgba(255, 255, 255, 0.075);
-    border-left: 3px solid #3b7ddd;
+    color: #212529;
+    background-color: #f8f9fa;
+    border-left: 3px solid #6c757d;
 }
 
 /* CSS untuk Overlay Loading */
@@ -207,11 +231,14 @@ a.sidebar-link:hover {
     justify-content: center;
     align-items: center;
     z-index: 9999; /* Di atas elemen lain */
-    transition: opacity 3s; /* Transisi saat menghilang */
+    transition: opacity 0.5s; /* Transisi saat menghilang */
 }
 
-/* CSS untuk Efek Transisi pada Konten */
 .fade-in-content {
-    opacity: 0; /* Mulai dari 0 (tak terlihat) */
-    transition: opacity 5s; /* Transisi untuk efek muncul perlahan */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.fade-in-content.show {
+    opacity: 1;
 }

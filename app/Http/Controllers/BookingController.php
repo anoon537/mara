@@ -62,13 +62,8 @@ class BookingController extends Controller
         $booking->booking_time = $validatedData['booking_time'];
         $booking->additional_people = $additional_people; // Simpan jumlah orang tambahan
 
-        // Periksa harga yang dihitung
-        dump("Original Price: $original_price");
-        dump("Additional Cost: $additional_cost");
-        dump("Total Price: $price");
-
         $booking->price = $price; // Harga total
-        $booking->status = 'pending';
+        $booking->status = 'waiting for confirmation';
         $booking->save();
         return redirect()->route('booking.confirmation', ['booking_id' => $booking->id]);
     }

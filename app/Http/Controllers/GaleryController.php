@@ -71,7 +71,13 @@ class GaleryController extends Controller
         // Jika ada file gambar baru yang diunggah
         if ($request->hasFile('images')) {
             // Hapus gambar lama dari penyimpanan
-            Storage::deleteDirectory('public/' . $galeryItem->title);
+            $existingImages = Galery::where('title', $galeryItem->title)->get();
+            foreach ($existingImages as $image) {
+                // Convert the URL to a relative path
+                $oldImagePath = str_replace('/storage/', '', $image->image_url);
+                Storage::disk('public')->delete($oldImagePath);
+                $image->delete();
+            }
 
             // Iterasi semua file gambar yang diunggah
             foreach ($request->file('images') as $image) {
@@ -81,7 +87,7 @@ class GaleryController extends Controller
                 // Simpan informasi galeri ke dalam database
                 Galery::create([
                     'title' => $request->title,
-                    'image_url' => $imagePath,
+                    'image_url' => Storage::url($imagePath),
                 ]);
             }
         }
@@ -92,6 +98,7 @@ class GaleryController extends Controller
 
         return redirect()->route('admin.galery')->with('success', 'Gallery item updated successfully.');
     }
+
 
     public function destroy($id)
     {

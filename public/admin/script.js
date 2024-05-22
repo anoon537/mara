@@ -52,5 +52,43 @@ window.addEventListener("load", () => {
 
     // Tampilkan konten utama dengan animasi
     mainContent.style.display = "block";
-    mainContent.style.opacity = "1"; // Membuat konten muncul perlahan
+    setTimeout(() => {
+        mainContent.classList.add("show"); // Tambahkan kelas untuk animasi
+    }, 100); // Delay to trigger the transition
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Wait for 5 seconds (5000 milliseconds) and then hide the alert
+    setTimeout(function () {
+        var alert = document.getElementById("success-alert");
+        if (alert) {
+            alert.style.transition = "opacity 0.5s ease-out";
+            alert.style.opacity = 0;
+            setTimeout(function () {
+                alert.remove();
+            }, 500); // Wait for the transition to finish before removing the element
+        }
+    }, 5000); // 5000 milliseconds = 5 seconds
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    var confirmDeleteModal = document.getElementById("confirmDeleteModal");
+    var confirmDeleteButton = document.getElementById("confirmDeleteButton");
+    var deleteForm;
+
+    confirmDeleteModal.addEventListener("show.bs.modal", function (event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var bookingId = button.getAttribute("data-id"); // Extract info from data-* attributes
+
+        // Find the form that matches the booking ID
+        deleteForm = document.querySelector(
+            '.delete-form[action*="' + bookingId + '"]'
+        );
+    });
+
+    confirmDeleteButton.addEventListener("click", function () {
+        if (deleteForm) {
+            deleteForm.submit();
+        }
+    });
 });

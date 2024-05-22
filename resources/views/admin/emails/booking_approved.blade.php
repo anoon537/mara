@@ -5,70 +5,64 @@
     <meta charset="UTF-8">
     <title>Booking Approved</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        .bg-gray-100 {
-            background-color: #f7f7f7;
-        }
-
-        .text-gray-800 {
-            color: #333;
-        }
-
-        .text-gray-600 {
-            color: #666;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-    </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-body-tertiary">
     <div class="container">
-        <!-- Header dengan logo -->
+        <!-- Header with logo -->
         <div class="text-center my-4">
             <img src="{{ asset('img/mara/logo1.png') }}" class="py-2 px-2 bg-secondary"
                 style="width: 120px; height: 50px; border-radius: 2.5px;" alt="logo">
         </div>
 
-        <!-- Informasi pemesanan -->
-        <div class="mb-5 text-center">
-            <h1 class="h4 fw-bold text-gray-800">Hallo, {{ $booking->user->name }} !</h1>
-            <h1 class="h4 fw-bold text-gray-800">Kami ingin mengucapkan terima kasih atas pemesanan Paket Foto di Mara
-                Studio dengan paket
-                {{ $booking->photo_package->name }} pada tanggal
-                {{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }}. Kami sangat menghargai kepercayaan
-                Anda kepada kami.</h1>
-            <p class="text-gray-600">
-                Pemesanan ID: {{ $booking->id }}
+        <!-- Booking Information -->
+        <div class="my-5 text-center">
+            <h1 class="text-secondary">Hello, {{ $booking->user->name }}!</h1>
+            <h4 class="text-secondary">We would like to thank you for booking a Photo Package at Mara Studio with the
+                package
+                {{ $booking->photo_package->name }} on
+                {{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }} at
+                {{ \Carbon\Carbon::parse($booking->booking_time)->format('H:i') }}. We truly appreciate
+                your trust in us.</h4>
+            <p class="text-black-50">
+                Booking ID: <span class="text-black">{{ $booking->id }}</span>
             </p>
-            <p class="text-gray-600">
-                Nama Paket: {{ $booking->photo_package->name }}
+            <p class="text-black-50">
+                Package Name: <span class="text-black">{{ $booking->photo_package->name }}</span>
             </p>
-            <p class="text-gray-600">
-                Status pemesanan: {{ $booking->status }}
+            <p class="text-black-50">
+                Price: <span class="text-black">Rp.{{ number_format($booking->price, 0, ',', '.') }}</span>
             </p>
-            <p class="text-gray-600">
-                Tanggal pemesanan: {{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }}
+            <p class="text-black-50">
+                Booking Date & Time: <span
+                    class="text-black">{{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }} at
+                    {{ \Carbon\Carbon::parse($booking->booking_time)->format('H:i') }} WIB</span>
             </p>
-            <p class="text-gray-600">
-                Pembayaran: Rp {{ $booking->payment->payment_option }}
+            <p class="text-black-50">
+                Booking Status: <span class="text-black">{{ $booking->status }}</span>
             </p>
-            <p class="text-gray-600">
-                Total harga: Rp {{ number_format($booking->payment->price, 2) }}
+            <p class="text-black-50">
+                Payment: <span class="text-black">Rp.{{ number_format($booking->payment->price, 0, ',', '.') }} |
+                    {{ $booking->payment->payment_option }}</span>
+            </p>
+            <p class="text-black-50">
+                You have an outstanding payment of
+                <span
+                    class="text-black">Rp.{{ number_format($booking->price - $booking->payment->price, 0, ',', '.') }}</span>
             </p>
         </div>
 
-        <!-- Informasi lebih lanjut atau detail lain -->
+        <!-- Further Information or Other Details -->
         <div class="card bg-white shadow-md p-4 rounded-3xl mb-5">
-            <p class="text-gray-600 text-center">
-                Jika Anda memiliki pertanyaan, silakan hubungi kami di
-                <a class="text-dark" href="marakreatif@gmail.com">marakreatif@gmail.com</a> atau <a class="text-dark"
+            <p class="text-secondary-emphasis text-center fw-bold">
+                Please arrive on time according to the booked date and time. If you have any questions, please contact
+                us at <a class="text-success"
                     href="https://api.whatsapp.com/send/?phone=6285876947844&text&type=phone_number&app_absent=0">wa.me/6285876947844</a>
+                or <a class="text-info-emphasis" href="marakreatif@gmail.com">marakreatif@gmail.com</a>
             </p>
         </div>
     </div>
 </body>
+
 
 </html>

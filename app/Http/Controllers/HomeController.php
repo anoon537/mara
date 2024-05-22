@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PhotoPackage;
 use App\Models\Galery;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMessage;
 
 class HomeController extends Controller
 {
@@ -62,5 +64,20 @@ class HomeController extends Controller
     public function howShop()
     {
         return view('home.how-shop');
+    }
+
+    public function sendContactMessage(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'subject' => 'required',
+            'message' => 'required',
+        ]);
+
+        // Kirim email notifikasi
+        Mail::to(config('mail.from.address'))->send(new ContactMessage($validatedData));
+
+        return redirect()->back()->with('success', 'Your message has been sent successfully!');
     }
 }

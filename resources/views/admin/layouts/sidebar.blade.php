@@ -4,7 +4,7 @@
     $sidebarActiveRoute = match (true) {
         str_contains($currentRoute, 'photo_packages') => 'photo_packages.index',
         str_contains($currentRoute, 'admin.galery') => 'admin.galery',
-        str_contains($currentRoute, 'users') => 'admin.users.user-settings',
+        str_contains($currentRoute, 'users') => 'admin.users.index',
         str_contains($currentRoute, 'bookings') => 'admin.bookings.index',
         str_contains($currentRoute, 'reports') => 'admin.reports.index',
         str_contains($currentRoute, 'do') => 'admin.do.index',
@@ -14,12 +14,13 @@
 @endphp
 
 <aside id="sidebar">
-    <div class="d-flex mt-2 mx-2">
+    <div class="d-flex mt-2 ms-1">
         <button class="toggle-btn" type="button">
-            <i class="fas fa-bars-staggered"></i>
+            <i class="fas fa-bars-staggered" style="color:#6c757d;"></i>
         </button>
         <div class="sidebar-logo">
-            <a href="#"><img src="{{ asset('img/mara/logo1.png') }}" style="width: 75%" alt=""></a>
+            <a href="#"><img src="https://i.ibb.co/dpW9NPS/logo1-1.png" alt="logo1-1"
+                    style="width: 120px; height: 50px;" /></a>
         </div>
     </div>
     <ul class="sidebar-nav">
@@ -59,16 +60,16 @@
                 <span>Report</span>
             </a>
         </li>
-        <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.users.user-settings' ? 'active' : '' }}">
-            <a href="{{ route('admin.users.user-settings') }}" class="sidebar-link">
+        <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.users.index' ? 'active' : '' }}">
+            <a href="{{ route('admin.users.index') }}" class="sidebar-link">
                 <i class="fas fa-users"></i>
-                <span>User Settings</span>
+                <span>User Data</span>
             </a>
         </li>
     </ul>
     <div class="sidebar-footer">
         <a class="sidebar-link">
-            <img src="{{ asset('img/mara/logo2.png') }}" style="width: 75%" alt="">
+            <img src="{{ asset('img/mara/logofot.png') }}" style="width: 75%" alt="">
         </a>
     </div>
 </aside>

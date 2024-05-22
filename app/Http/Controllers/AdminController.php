@@ -27,12 +27,17 @@ class AdminController extends Controller
         $total_bookings = Booking::count();
         $total_direct_orders = DirectOrder::count();
         $total_all_orders = $total_bookings + $total_direct_orders;
-        $pending_bookings = Booking::where('status', 'pending')->count(); // Booking yang masih pending
-        $approved_bookings = Booking::where('status', 'approved')->count(); // Booking yang telah disetujui
+        $pending_bookings = Booking::where('status', 'waiting for confirmation')->count(); // Booking yang masih pending
+        $approved_bookings = Booking::where('status', 'confirmed')->count(); // Booking yang telah disetujui
         $completed_bookings = Booking::where('status', 'completed')->count(); // Booking yang telah selesai
         $completed_do = DirectOrder::where('status', 'completed')->count(); // Booking yang telah selesai
         $total_all_completed = $completed_bookings + $completed_do;
-
+        $completedBookings = Booking::where('status', 'completed')->get();
+        $completedDirectOrders = DirectOrder::where('status', 'completed')->get();
+        $allCompletedOrders = $completedBookings->merge($completedDirectOrders);
+        $total_revenue = $allCompletedOrders->sum(function ($order) {
+            return $order->price ?? 0;
+        });
         // Kirim data ke view
         return view('admin.index', compact(
             'title',
@@ -43,16 +48,29 @@ class AdminController extends Controller
             'total_all_orders',
             'pending_bookings',
             'approved_bookings',
-            'total_all_completed'
+            'total_all_completed',
+            'total_revenue'
         ));
     }
 
     // USER SETTINGS
-    public function indexUsers()
+    public function indexUsers(Request $request)
     {
-        $title = 'User Settings';
-        $users = User::all();
-        return view('admin.users.user-settings', compact('title', 'users'));
+        $title = 'User Data';
+        $users = User::query();
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $users->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+                // Add more fields as needed for searching
+            });
+        }
+
+        $users = $users->get();
+
+        return view('admin.users.index', compact('title', 'users'));
     }
 
     public function createUser()
@@ -78,7 +96,7 @@ class AdminController extends Controller
             'role' => 'user', // Pastikan Anda menambahkan kolom 'role' pada model User
         ]);
 
-        return redirect()->route('admin.users.user-settings')->with('success', 'User added successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User added successfully');
     }
 
     public function editUser($id)
@@ -100,7 +118,7 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         $user->update($validated);
 
-        return redirect()->route('admin.users.user-settings')->with('success', 'User updated successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function destroyUser($id)
@@ -108,7 +126,7 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('admin.users.user-settings')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 
     // BOOKINGS
@@ -118,25 +136,27 @@ class AdminController extends Controller
         $query = Booking::query();
 
         // Memeriksa apakah ada parameter pencarian
-        if ($request->has('search')) {
-            // Menambahkan kondisi pencarian berdasarkan booking ID
-            $query->where('id', $request->search);
+        if ($request->has('search') && $request->search !== null) {
+            $search = $request->search;
+
+            // Menambahkan kondisi pencarian berdasarkan booking ID, nama pengguna, atau tanggal booking
+            $query->where(function ($q) use ($search) {
+                $q->where('id', $search)
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereDate('booking_date', 'like', '%' . $search . '%');
+            });
         }
 
-        // Mengambil data bookings sesuai dengan query yang sudah dibuat
+        // Mengambil data bookings sesuai dengan query yang sudah dibuat, dengan pengurutan custom
         $bookings = $query->with(['user', 'photo_package', 'payments'])
-            ->orderBy('created_at', 'desc');
-
-        // Jika tidak ada input pencarian, tampilkan semua booking
-        if (!$request->has('search')) {
-            $bookings = $bookings->get();
-        } else {
-            $bookings = $bookings->paginate(10); // Jika ada input pencarian, gunakan pagination
-        }
+            ->orderByRaw("FIELD(status, 'waiting for confirmation', 'confirmed', 'completed')")
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('admin.bookings.index', compact('bookings', 'title'));
     }
-
 
     public function approve($payment_id)
     {
@@ -144,7 +164,7 @@ class AdminController extends Controller
         $payment->save();
 
         $booking = Booking::findOrFail($payment->booking_id);
-        $booking->status = 'approved';
+        $booking->status = 'confirmed';
         $booking->save();
 
         // Kirim email persetujuan ke pengguna
@@ -177,7 +197,7 @@ class AdminController extends Controller
     public function markPending($id)
     {
         $booking = Booking::findOrFail($id);
-        $booking->status = 'pending';
+        $booking->status = 'waiting for confirmation';
         $booking->save();
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking marked as pending'); // Redirect
@@ -313,12 +333,38 @@ class AdminController extends Controller
         return redirect()->route('admin.do.index')->with('success', 'Direct Order berhasil dibuat.');
     }
 
-    public function indexDO()
+    public function indexDO(Request $request)
     {
         $title = 'Direct Orders';
-        // Mengambil DirectOrder dengan relasi PhotoPackage
-        $directOrders = DirectOrder::with('photo_package')->get();
+        $query = DirectOrder::query();
+
+        // Memeriksa apakah ada parameter pencarian
+        if ($request->has('search') && $request->search !== null) {
+            $search = $request->search;
+
+            // Menambahkan kondisi pencarian berdasarkan id, user_id atau booking_date
+            $query->where(function ($q) use ($search) {
+                $q->where('id', $search)
+                    ->orWhere('name', 'like', '%' . $search . '%')
+                    ->orWhereDate('booking_date', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Mengambil data directOrders sesuai dengan query yang sudah dibuat, dengan pengurutan custom
+        $directOrders = $query->with('photo_package')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
         return view('admin.do.index', compact('directOrders', 'title'));
+    }
+
+
+    public function printInvoiceDo($id)
+    {
+        $do = DirectOrder::with('photo_package')->findOrFail($id);
+
+        // Mengembalikan tampilan invoice dengan data booking
+        return view('admin.do.invoice', compact('do'));
     }
 
     public function destroyDO($id)

@@ -12,14 +12,12 @@
     </div>
     <!-- Spinner End -->
 
-
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light fixed-top shadow py-lg-0 px-4 px-lg-5 wow fadeIn"
         data-wow-delay="0.1s">
         @include('layouts.navbar')
     </nav>
     <!-- Navbar End -->
-
 
     <!-- Header Start -->
     <div class="container-fluid hero-header bg-light py-5 mb-5">
@@ -42,24 +40,43 @@
                 <div class="col-lg-6 animated fadeIn">
                     <div class="row g-3">
                         <div class="col-6 text-end">
-                            <img class="img-fluid bg-white p-3 w-100 mb-3"
-                                src="{{ asset('img/mara/wedding (1).jpg') }}"alt="">
-                            <img class="img-fluid bg-white p-3 w-50" src="{{ asset('img/mara/wedding (2).jpg') }}"
+                            <img class="img-fluid bg-white p-3 mb-3 large-img" src="{{ asset('img/mara/home4.jpg') }}"
+                                alt="">
+                            <img class="img-fluid bg-white p-3 small-img" src="{{ asset('img/mara/home1.jpg') }}"
                                 alt="">
                         </div>
                         <div class="col-6">
-                            <img class="img-fluid bg-white p-3 w-50 mb-3" src="{{ asset('img/mara/wedding (3).jpg') }}"
+                            <img class="img-fluid bg-white p-3 mb-3 small-img" src="{{ asset('img/mara/home2.jpg') }}"
                                 alt="">
-                            <img class="img-fluid bg-white p-3 w-100" src="{{ asset('img/mara/wedding (5).jpg') }}"
+                            <img class="img-fluid bg-white p-3 large-img" src="{{ asset('img/mara/home3.jpg') }}"
                                 alt="">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
     <!-- Header End -->
+
+    <!-- Video Modal Start -->
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="videoModalLabel">YouTube Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/oFG39zMPJ1Y" title="YouTube video"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Video Modal End -->
+
     <!-- About Start -->
     <div class="container-xxl py-5">
         <div class="container">
@@ -67,10 +84,10 @@
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="row g-3 img-twice position-relative h-100">
                         <div class="col-6">
-                            <img class="img-fluid bg-light p-3" src="{{ asset('img/mara/about (1).jpg') }}" alt="">
+                            <img class="img-fluid bg-light p-3" src="{{ asset('img/mara/about1.jpg') }}" alt="">
                         </div>
                         <div class="col-6 align-self-end">
-                            <img class="img-fluid bg-light p-3" src="{{ asset('img/mara/about (2).jpg') }}" alt="">
+                            <img class="img-fluid bg-light p-3" src="{{ asset('img/mara/about2.jpg') }}" alt="">
                         </div>
                     </div>
                 </div>
@@ -102,12 +119,10 @@
                         <a class="btn btn-secondary py-3 px-5" href="{{ route('about') }}">Pelajari Lebih Lanjut</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
     <!-- About End -->
-
 
     <!-- Facts Start -->
     <div class="container-xxl py-5">
@@ -144,9 +159,7 @@
             </div>
         </div>
     </div>
-
     <!-- Facts End -->
-
 
     <!-- Service Start -->
     <div class="container-xxl bg-light py-5 my-5">
@@ -155,34 +168,63 @@
                 <p class="text-uppercase mb-2">Photo Package</p>
                 <h1 class="display-6 mb-4">We Provide Best Professional Services</h1>
             </div>
-            <!-- Menampilkan data PhotoPackage -->
-            <div class="row g-3">
-                @foreach ($photoPackages as $package)
-                    <!-- Iterasi melalui daftar paket foto -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="service-item d-flex flex-column bg-white p-3 pb-0">
-                            <div class="position-relative">
-                                <!-- Menampilkan gambar paket foto -->
-                                @if ($package->image_url)
-                                    <img class="img-fluid" src="{{ $package->image_url }}" alt="{{ $package->name }}">
-                                @endif
-                                <div class="service-overlay">
-                                    <a class="btn btn-lg-square btn-outline-light rounded-circle" href="#"><i
-                                            class="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                            <div class="text-center p-4">
-                                <!-- Menampilkan nama dan harga paket -->
-                                <h4>{{ $package->name }}</h4> <!-- Nama paket foto -->
-                                <p class="text-muted">Rp. {{ number_format($package->price, 0, ',', '.') }}</p>
-                                <!-- Harga paket foto -->
+            <!-- Carousel for Photo Packages -->
+            <div id="photoPackageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach ($photoPackages->chunk(4) as $index => $chunk)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <div class="row">
+                                @foreach ($chunk as $package)
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="service-item d-flex flex-column bg-white p-3 pb-0">
+                                            <div class="position-relative">
+                                                <!-- Display package image with fixed dimensions -->
+                                                @if ($package->image_url)
+                                                    <img class="img-fluid fixed-size-img" src="{{ $package->image_url }}"
+                                                        alt="{{ $package->name }}">
+                                                @endif
+                                                <div class="service-overlay">
+                                                    <a class="btn btn-lg-square btn-outline-light rounded-circle"
+                                                        href="#"><i class="fa fa-link"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="text-center p-4">
+                                                <!-- Display package name and price -->
+                                                <h5>{{ $package->name }}</h5>
+                                                <p class="text-muted">Rp.
+                                                    {{ number_format($package->price, 0, ',', '.') }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
+                <!-- Carousel controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#photoPackageCarousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#photoPackageCarousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
         </div>
     </div>
     <!-- Service End -->
+
+    <!-- Add custom CSS -->
+    <style>
+        .fixed-size-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+    </style>
+
     @include('layouts.footer')
 @endsection

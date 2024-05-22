@@ -11,19 +11,20 @@
                 </ul>
             </div>
         @endif
-
-        <form method="POST" action="{{ route('admin.galery.store') }}" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input type="text" name="title" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="images" class="form-label">Images</label>
-                <input type="file" name="images[]" class="form-control" multiple required>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Item</button>
-            <a href="{{ route('admin.galery') }}" class="btn btn-secondary">Back</a>
-        </form>
+        <div class="container-fluid p-4 rounded shadow-lg" style="background-color: #fefeff;">
+            <form method="POST" action="{{ route('admin.galery.store') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="images" class="form-label">Images</label>
+                    <input type="file" name="images[]" class="form-control" multiple required>
+                </div>
+                <button type="submit" class="btn">Add Item</button>
+                <a href="{{ route('admin.galery') }}" class="btn">Back</a>
+            </form>
+        </div>
     </div>
 @endsection

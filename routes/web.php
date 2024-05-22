@@ -28,6 +28,7 @@ Route::get('/photo-package/{id}', [PhotoPackageController::class, 'show'])->name
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/galery', [HomeController::class, 'showGalery'])->name('galery');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'sendContactMessage'])->name('contact.send');
 Route::get('/terms-conditions', [HomeController::class, 'terms'])->name('terms-conditions');
 Route::get('/how-to-shop', [HomeController::class, 'howShop'])->name('howShop');
 
@@ -45,7 +46,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'admindashboard'])->name('admin.index');
 
     // Rute User Settings
-    Route::get('/users', [AdminController::class, 'indexUsers'])->name('admin.users.user-settings');
+    Route::get('/users', [AdminController::class, 'indexUsers'])->name('admin.users.index');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
     Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
@@ -88,6 +89,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/direct-order/create', [AdminController::class, 'createDO'])->name('admin.do.create');
     Route::post('/direct-order', [AdminController::class, 'storeDO'])->name('admin.do.store');
     Route::delete('/direct-order/{id}', [AdminController::class, 'destroyDO'])->name('admin.do.destroy');
+    Route::get('/direct-order/invoice/{id}', [AdminController::class, 'printInvoiceDo'])->name('admin.do.printInvoice');
 });
 
 //////////////// User Route ///////////////////

@@ -1,8 +1,5 @@
 <header class="mb-4">
-    <h2 class="text-lg font-weight-bold text-gray-900">
-        {{ __('Profile Information') }}
-    </h2>
-    <p class="text-sm text-gray-600">
+    <p class="text-muted">
         {{ __("Update your account's profile information and email address.") }}
     </p>
 </header>
@@ -71,11 +68,5 @@
         <button type="submit" class="btn btn-secondary">
             {{ __('Save') }}
         </button>
-
-        @if (session('status') === 'profile-updated')
-            <p class="text-success text-sm">
-                {{ __('Profile updated successfully.') }}
-            </p>
-        @endif
     </div>
 </form>

@@ -8,7 +8,7 @@
 </head>
 
 <body onload="window.print();">
-    <h2 class="fw-bold text-center">LAPORAN FOTO STUDIO DI MARA STUDIO</h2>
+    <h2 class="fw-bold text-center">LAPORAN TRANSAKSI MARA STUDIO</h2>
     <p class="text-center">Laporan dari {{ \Carbon\Carbon::parse($start_date)->format('d F Y') }} hingga
         {{ \Carbon\Carbon::parse($end_date)->format('d F Y') }}</p>
     <table class="table table-bordered">

@@ -39,7 +39,7 @@ class PaymentController extends Controller
 
         // Jika pembayaran diterima dengan opsi full atau DP, status booking tetap pending
         if ($validatedData['payment_option'] === 'full') {
-            $booking->status = 'pending';
+            $booking->status = 'waiting for confirmation';
             $booking->save();
         }
 

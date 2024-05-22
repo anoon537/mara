@@ -18,15 +18,27 @@
         @include('layouts.navbar')
     </nav>
     <!-- Navbar End -->
-
-    <!-- Main Content Start -->
-    <div class="container my-5">
+    <div class="container mt-5 pt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('home') }}" class="text-secondary">Home</a> <!-- Link ke homepage -->
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">History</li> <!-- Nama paket -->
+            </ol>
+        </nav>
+        <!-- Main Content Start -->
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 mt-3">
                 <!-- Update Profile Information -->
-                <div class="card my-5">
-                    <div class="card-header">
+                <div class="card mb-2">
+                    <div class="card-header me-2">
                         {{ __('Update Profile Information') }}
+                        @if (session('status') === 'profile-updated')
+                            <p class="text-success text-sm">
+                                {{ __('Profile updated successfully.') }}
+                            </p>
+                        @endif
                     </div>
                     <div class="card-body">
                         @include('profile.partials.update-profile-information-form')
@@ -34,9 +46,14 @@
                 </div>
 
                 <!-- Update Password -->
-                <div class="card my-5">
-                    <div class="card-header">
-                        {{ __('Update Password') }}
+                <div class="card mb-2">
+                    <div class="card-header me-2">
+                        {{ __('Change Password') }}
+                        @if (session('status') === 'password-updated')
+                            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                                class="text-success text-sm">
+                                {{ __('Password changed successfully.') }}</p>
+                        @endif
                     </div>
                     <div class="card-body">
                         @include('profile.partials.update-password-form')
@@ -44,7 +61,7 @@
                 </div>
 
                 <!-- Delete Account -->
-                <div class="card my-5">
+                <div class="card">
                     <div class="card-header text-danger">
                         {{ __('Delete Account') }}
                     </div>

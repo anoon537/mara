@@ -26,14 +26,14 @@
                                 class="fa-solid fa-user-gear"></i></a>
                         <div class="dropdown-menu dropdown-menu-end rounded-0 shadow-sm border-0 m-0">
                             <p class="dropdown-item">{{ Auth::user()->name }}</p>
-                            <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fa-solid fa-user"></i>
-                                {{ __('Profile') }}</a>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
+                                    class="fa-solid me-2 fa-user"></i>{{ __('Profile') }}</a>
                             <a class="dropdown-item" href="{{ route('payment.history') }}"><i
-                                    class="fa-solid fa-history"></i> History Pembayaran</a>
+                                    class="fa-solid me-2 fa-history"></i>{{ __('Purchase History') }}</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i>
-                                    {{ __('Log Out') }}</button>
+                                <button type="submit" class="dropdown-item"><i
+                                        class="fa-solid me-2 fa-right-from-bracket"></i>{{ __('Log Out') }}</button>
                             </form>
                         </div>
 
