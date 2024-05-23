@@ -19,7 +19,7 @@
                         <div class="col-lg-6">
                             <div class="card-body p-md-4 mx-md-4">
                                 <div class="d-flex">
-                                    <a href="{{ route('homepage') }}">
+                                    <a href="{{ route('home') }}">
                                         <img src="{{ asset('img/mara/logo1.png') }}" class="py-2 px-2 bg-secondary"
                                             style="width: 120px; height: 50px; border-radius: 2.5px;" alt="logo">
                                     </a>

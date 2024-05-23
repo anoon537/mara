@@ -3,7 +3,7 @@
     data-wow-delay="0.1s">
     <div class="row g-5 py-5">
         <div class="col-lg-6 pe-lg-5">
-            <a href="index.html" class="navbar-brand">
+            <a href="#" class="navbar-brand">
                 <h1 class="display-5 text-secondary">Mara Studio</h1>
             </a>
             <p>Mara Studio adalah sebuah studio kreatif yang berbasis di Indonesia. Kami berdedikasi untuk menciptakan

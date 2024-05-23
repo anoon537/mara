@@ -14,7 +14,7 @@
                         <div class="col-lg-6">
                             <div class="card-body p-md-4 mx-md-4">
                                 <div class="d-flex align-items-center mb-4">
-                                    <a href="{{ route('homepage') }}">
+                                    <a href="{{ route('home') }}">
                                         <img src="https://i.ibb.co/dpW9NPS/logo1-1.png" alt="logo1-1" border="0"
                                             style="width: 120px; height: 50px;">
                                     </a>
