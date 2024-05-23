@@ -35,55 +35,73 @@
             @if ($payments->isEmpty())
                 <p class="text-center text-muted">make transactions first</p>
             @else
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Photo Package</th>
-                                <th>Date & Time</th>
-                                <th>Price | Payment Option</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($payments as $payment)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $payment->booking->photo_package->name }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($payment->booking->booking_date)->format('d F Y') }} at
-                                        {{ \Carbon\Carbon::parse($payment->booking->booking_time)->format('H:i') }}</td>
-                                    <td>
-                                        @if ($payment->booking->status === 'completed')
-                                            Rp {{ number_format($payment->booking->price, 0, ',', '.') }} |
-                                            {{ $payment->payment_option }}
-                                        @else
-                                            Rp {{ number_format($payment->price, 0, ',', '.') }} |
-                                            {{ $payment->payment_option }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($payment->booking->status == 'waiting for confirmation')
-                                            <span
-                                                class="badge bg-warning text-white">{{ ucfirst($payment->booking->status) }}</span>
-                                            <!-- Kuning untuk pending -->
-                                        @elseif ($payment->booking->status == 'confirmed')
-                                            <span
-                                                class="badge bg-primary text-white">{{ ucfirst($payment->booking->status) }}</span>
-                                            <!-- Biru untuk approved -->
-                                        @elseif ($payment->booking->status == 'completed')
-                                            <span
-                                                class="badge bg-success text-white">{{ ucfirst($payment->booking->status) }}</span>
-                                            <!-- Hijau untuk completed -->
-                                        @else
-                                            <span>{{ ucfirst($payment->booking->status) }}</span>
-                                            <!-- Warna default jika ada status lain -->
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="list-group">
+                    @foreach ($payments as $payment)
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal"
+                            data-bs-target="#paymentModal{{ $payment->id }}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ $payment->booking->photo_package->name }}</h5>
+                                <small>{{ \Carbon\Carbon::parse($payment->booking->booking_date)->format('d F Y') }}</small>
+                            </div>
+                            <small>
+                                @if ($payment->booking->status == 'waiting for confirmation')
+                                    <span
+                                        class="badge bg-warning text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                @elseif ($payment->booking->status == 'confirmed')
+                                    <span
+                                        class="badge bg-primary text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                @elseif ($payment->booking->status == 'completed')
+                                    <span
+                                        class="badge bg-success text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                @else
+                                    <span>{{ ucfirst($payment->booking->status) }}</span>
+                                @endif
+                            </small>
+                        </a>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="paymentModal{{ $payment->id }}" tabindex="-1"
+                            aria-labelledby="paymentModalLabel{{ $payment->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="paymentModalLabel{{ $payment->id }}">Payment Details
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Booking ID:</strong> #{{ $payment->booking->id }}</p>
+                                        <p><strong>Photo Package:</strong> {{ $payment->booking->photo_package->name }}</p>
+                                        <p><strong>Date & Time:</strong>
+                                            {{ \Carbon\Carbon::parse($payment->booking->booking_date)->format('d F Y') }}
+                                            at {{ \Carbon\Carbon::parse($payment->booking->booking_time)->format('H:i') }}
+                                        </p>
+                                        <p><strong>Price:</strong> Rp {{ number_format($payment->price, 0, ',', '.') }}</p>
+                                        <p><strong>Payment Option:</strong> {{ $payment->payment_option }}</p>
+                                        <p><strong>Status:</strong>
+                                            @if ($payment->booking->status == 'waiting for confirmation')
+                                                <span
+                                                    class="badge bg-warning text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                            @elseif ($payment->booking->status == 'confirmed')
+                                                <span
+                                                    class="badge bg-primary text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                            @elseif ($payment->booking->status == 'completed')
+                                                <span
+                                                    class="badge bg-success text-white">{{ ucfirst($payment->booking->status) }}</span>
+                                            @else
+                                                <span>{{ ucfirst($payment->booking->status) }}</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             @endif
         </div>
