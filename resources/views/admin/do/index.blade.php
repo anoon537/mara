@@ -17,7 +17,7 @@
             <!-- Tabel dengan Bootstrap 5 -->
             <div class="table-responsive">
                 <table class="table">
-                    <thead style="vertical-align: middle;"> <!-- Baris header dengan latar gelap -->
+                    <thead style="vertical-align: middle;">
                         <tr>
                             <th>Booking ID</th>
                             <th>Booked By</th>
@@ -35,11 +35,18 @@
                                 <td>#{{ $directOrder->id }}</td>
                                 <td>{{ $directOrder->name }}</td>
                                 <td>{{ $directOrder->phone }}</td>
-                                <td>{{ $directOrder->photo_package->name }} |
-                                    {{ $directOrder->extra_person }}</td>
-                                <td>{{ \Carbon\Carbon::parse($directOrder->booking_date)->format('d F Y') }} |
-                                    {{ \Carbon\Carbon::parse($directOrder->booking_time)->format('H:i') }}</td>
-                                <td><span class=" badge bg-success text-white">{{ ucfirst($directOrder->status) }}</span>
+                                <td>{{ $directOrder->paket }} |
+                                    {{ $directOrder->extra_person }} person</td>
+                                <td>{{ \Carbon\Carbon::parse($directOrder->booking_date)->format('d F Y') }} at
+                                    {{ \Carbon\Carbon::parse($directOrder->booking_time)->format('H:i') }} WIB</td>
+                                <td>
+                                    @if ($directOrder->status == 'dp')
+                                        <span
+                                            class="badge bg-warning text-white">{{ ucfirst($directOrder->status) }}</span>
+                                    @else
+                                        <span
+                                            class="badge bg-success text-white">{{ ucfirst($directOrder->status) }}</span>
+                                    @endif
                                 </td>
                                 <td>Rp.{{ number_format($directOrder->price, 0, ',', '.') }}</td>
                                 <td>
@@ -47,6 +54,14 @@
                                         target="_blank">
                                         <i class="fas fa-print"></i>
                                     </a>
+                                    @if ($directOrder->status == 'dp')
+                                        <form method="POST" action="{{ route('admin.do.complete', $directOrder->id) }}"
+                                            class="d-inline complete-form">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                        </form>
+                                    @endif
                                     <form method="POST" action="{{ route('admin.do.destroy', $directOrder->id) }}"
                                         class="d-inline delete-form">
                                         @csrf

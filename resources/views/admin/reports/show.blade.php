@@ -27,15 +27,16 @@
                     <tbody>
                         <!-- Iterasi untuk semua pesanan yang selesai -->
                         @foreach ($allCompletedOrders as $order)
-                            <!-- Ubah dari completedBookings ke allCompletedOrders -->
                             <tr>
                                 <td>#{{ $order->id }}</td>
                                 <td>{{ $order->user->name ?? $order->name }}</td> <!-- Jika Direct Order, gunakan name -->
                                 <td>
                                     @if (isset($order->photo_package))
                                         {{ $order->photo_package->name }}
+                                    @elseif (isset($order->directOrder))
+                                        {{ $order->directOrder->paket }}
                                     @else
-                                        N/A <!-- Jika tidak ada paket foto -->
+                                        {{ $order->paket ?? 'N/A' }}
                                     @endif
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($order->booking_date)->format('d F Y') }}</td>
@@ -46,6 +47,7 @@
                                 <!-- Harga dengan format Rupiah -->
                             </tr>
                         @endforeach
+
 
                         <!-- Baris Total Revenue -->
                         <tr>

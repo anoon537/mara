@@ -16,11 +16,13 @@ class DirectOrder extends Model
         'id', // ID kustom
         'name',
         'phone',
+        'paket',
         'extra_person',
         'photo_package_id',
         'booking_date',
         'booking_time',
         'price',
+        'harga',
         'status',
     ];
 

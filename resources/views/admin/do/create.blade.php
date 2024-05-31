@@ -21,12 +21,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="photo_package_id">Photo Package</label>
-                    <select name="photo_package_id" id="photo_package_id" class="form-control" required>
-                        @foreach ($photoPackages as $package)
-                            <option value="{{ $package->id }}">{{ $package->name }}</option>
-                        @endforeach
-                    </select>
+                    <label for="paket">Paket</label>
+                    <input type="text" name="paket" id="paket" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="harga">Harga</label>
+                    <input type="number" id="harga" name="harga" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
@@ -47,8 +48,18 @@
                         @endfor
                     </select>
                 </div>
-                <button type="submit" class="btn">Submit</button>
-                <a href="{{ route('admin.do.index') }}" class="btn">Back</a>
+
+                <div class="mb-3">
+                    <label for="payment_type">Payment Type</label>
+                    <select name="payment_type" id="payment_type" class="form-control" required>
+                        <option value="full">Full Payment</option>
+                        <option value="dp_30">DP 30%</option>
+                        <option value="dp_50">DP 50%</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="{{ route('admin.do.index') }}" class="btn btn-secondary">Back</a>
             </form>
         </div>
     </div>

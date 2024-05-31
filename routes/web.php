@@ -90,6 +90,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/direct-order', [AdminController::class, 'storeDO'])->name('admin.do.store');
     Route::delete('/direct-order/{id}', [AdminController::class, 'destroyDO'])->name('admin.do.destroy');
     Route::get('/direct-order/invoice/{id}', [AdminController::class, 'printInvoiceDo'])->name('admin.do.printInvoice');
+    Route::patch('/direct-order/complete/{id}', [AdminController::class, 'completeDO'])->name('admin.do.complete');
 });
 
 //////////////// User Route ///////////////////

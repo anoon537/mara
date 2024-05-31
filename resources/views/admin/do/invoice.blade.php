@@ -21,7 +21,7 @@
                     <!-- Daftar paket foto -->
                     <div class="row">
                         <div class="col-xl-10">
-                            <p>{{ $do->photo_package->name }} | Extra Person: {{ $do->extra_person }}</p>
+                            <p>{{ $do->paket }} | Extra Person: {{ $do->extra_person }}</p>
                         </div>
                         <div class="col-xl-2">
                             <p class="float-end">{{ number_format($do->price, 0, ',', '.') }}</p>

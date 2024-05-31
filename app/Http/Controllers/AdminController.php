@@ -297,8 +297,7 @@ class AdminController extends Controller
     public function createDO()
     {
         $title = 'Direct Order';
-        $photoPackages = PhotoPackage::all();
-        return view('admin.do.create', compact('photoPackages', 'title'));
+        return view('admin.do.create', compact('title'));
     }
 
     public function storeDO(Request $request)
@@ -306,62 +305,82 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
+            'paket' => 'required|string|max:255',
+            'harga' => 'required|numeric|min:0',
+            'extra_person' => 'required|integer|min:0',
             'booking_date' => 'required|date',
             'booking_time' => 'required|date_format:H:i',
-            'photo_package_id' => 'required|exists:photo_packages,id',
-            'extra_person' => 'required|integer|min:0', // Validasi extra person
+            'payment_type' => 'required|string|in:full,dp_30,dp_50',
         ]);
 
-        $photoPackage = PhotoPackage::findOrFail($request->photo_package_id);
+        $basePrice = $validatedData['harga'];
         $extraPersonCount = $validatedData['extra_person'];
-        $extraPersonCost = 15000; // Biaya untuk setiap extra person
+        $extraPersonCost = 20000; // Cost per extra person
+        $totalPrice = $basePrice + ($extraPersonCost * $extraPersonCount);
 
-        $price = $photoPackage->price + ($extraPersonCost * $extraPersonCount); // Total harga termasuk extra person
+        $paymentType = $validatedData['payment_type'];
+        switch ($paymentType) {
+            case 'dp_30':
+                $price = $totalPrice * 0.3;
+                $status = 'dp';
+                break;
+            case 'dp_50':
+                $price = $totalPrice * 0.5;
+                $status = 'dp';
+                break;
+            default:
+                $price = $totalPrice;
+                $status = 'completed';
+                break;
+        }
 
-        // Simpan data ke Direct Order dengan harga yang diperbarui
         $directOrder = DirectOrder::create([
             'name' => $validatedData['name'],
             'phone' => $validatedData['phone'],
-            'photo_package_id' => $validatedData['photo_package_id'],
+            'paket' => $validatedData['paket'],
+            'harga' => $basePrice,
+            'extra_person' => $extraPersonCount,
             'booking_date' => $validatedData['booking_date'],
             'booking_time' => $validatedData['booking_time'],
-            'extra_person' => $extraPersonCount, // Simpan jumlah extra person
-            'price' => $price, // Total harga
-            'status' => 'completed',
+            'price' => $price,
+            'status' => $status,
         ]);
 
         return redirect()->route('admin.do.index')->with('success', 'Direct Order berhasil dibuat.');
     }
 
-    public function indexDO(Request $request)
+    public function completeDO($id)
     {
-        $title = 'Direct Orders';
-        $query = DirectOrder::query();
+        $directOrder = DirectOrder::findOrFail($id);
+        $basePrice = $directOrder->harga;
+        $extraPersonCount = $directOrder->extra_person;
+        $extraPersonCost = 20000; // Cost per extra person
+        $totalPrice = $basePrice + ($extraPersonCost * $extraPersonCount);
 
-        // Memeriksa apakah ada parameter pencarian
-        if ($request->has('search') && $request->search !== null) {
-            $search = $request->search;
+        $directOrder->status = 'completed';
+        $directOrder->price = $totalPrice; // Set the price to the full amount including extra person cost
+        $directOrder->save();
 
-            // Menambahkan kondisi pencarian berdasarkan id, user_id atau booking_date
-            $query->where(function ($q) use ($search) {
-                $q->where('id', $search)
-                    ->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhereDate('booking_date', 'like', '%' . $search . '%');
-            });
-        }
-
-        // Mengambil data directOrders sesuai dengan query yang sudah dibuat, dengan pengurutan custom
-        $directOrders = $query->with('photo_package')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('admin.do.index', compact('directOrders', 'title'));
+        return redirect()->route('admin.do.index')->with('success', 'Order marked as completed.');
     }
 
 
+
+
+    public function indexDO(Request $request)
+    {
+        $title = 'Direct Orders';
+        $directOrders = DirectOrder::all();
+        // Check if the request expects JSON
+        if ($request->expectsJson()) {
+            return response()->json($directOrders);
+        }
+
+        return view('admin.do.index', compact('directOrders', 'title'));
+    }
     public function printInvoiceDo($id)
     {
-        $do = DirectOrder::with('photo_package')->findOrFail($id);
+        $do = DirectOrder::findOrFail($id);
 
         // Mengembalikan tampilan invoice dengan data booking
         return view('admin.do.invoice', compact('do'));
