@@ -30,23 +30,46 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            // Fungsi untuk mengubah nomor telepon dari 08 ke +62
+                            function convertPhoneNumber($phone)
+                            {
+                                // Jika nomor telepon dimulai dengan 08, ganti dengan +62
+                                if (substr($phone, 0, 2) == '08') {
+                                    return '+62' . substr($phone, 1);
+                                }
+                                return $phone;
+                            }
+                        @endphp
                         @foreach ($directOrders as $directOrder)
                             <tr>
                                 <td>#{{ $directOrder->id }}</td>
                                 <td>{{ $directOrder->name }}</td>
-                                <td>{{ $directOrder->phone }}</td>
+                                <td>
+                                    @php
+                                        // Mengonversi nomor telepon
+                                        $convertedPhone = $directOrder->phone
+                                            ? convertPhoneNumber($directOrder->phone)
+                                            : 'No Phone';
+                                    @endphp
+                                    <a class="text-success" href="https://wa.me/{{ $convertedPhone }}" target="_blank">
+                                        {{ $convertedPhone }}
+                                    </a>
+                                </td>
+
                                 <td>{{ $directOrder->paket }} |
                                     {{ $directOrder->extra_person }} person</td>
                                 <td>{{ \Carbon\Carbon::parse($directOrder->booking_date)->format('d F Y') }} at
                                     {{ \Carbon\Carbon::parse($directOrder->booking_time)->format('H:i') }} WIB</td>
                                 <td>
-                                    @if ($directOrder->status == 'dp')
+                                    @if ($directOrder->status == 'dp 30%' || $directOrder->status == 'dp 50%')
                                         <span
                                             class="badge bg-warning text-white">{{ ucfirst($directOrder->status) }}</span>
                                     @else
                                         <span
                                             class="badge bg-success text-white">{{ ucfirst($directOrder->status) }}</span>
                                     @endif
+
                                 </td>
                                 <td>Rp.{{ number_format($directOrder->price, 0, ',', '.') }}</td>
                                 <td>

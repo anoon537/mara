@@ -322,11 +322,11 @@ class AdminController extends Controller
         switch ($paymentType) {
             case 'dp_30':
                 $price = $totalPrice * 0.3;
-                $status = 'dp';
+                $status = 'dp 30%';
                 break;
             case 'dp_50':
                 $price = $totalPrice * 0.5;
-                $status = 'dp';
+                $status = 'dp 50%';
                 break;
             default:
                 $price = $totalPrice;
@@ -364,20 +364,18 @@ class AdminController extends Controller
         return redirect()->route('admin.do.index')->with('success', 'Order marked as completed.');
     }
 
-
-
-
     public function indexDO(Request $request)
     {
         $title = 'Direct Orders';
         $directOrders = DirectOrder::all();
-        // Check if the request expects JSON
+        // Periksa apakah permintaan mengharapkan JSON
         if ($request->expectsJson()) {
             return response()->json($directOrders);
         }
 
         return view('admin.do.index', compact('directOrders', 'title'));
     }
+
     public function printInvoiceDo($id)
     {
         $do = DirectOrder::findOrFail($id);

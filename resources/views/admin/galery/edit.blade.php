@@ -20,11 +20,11 @@
                     <input type="text" name="title" class="form-control" value="{{ $galeryItem->title }}" required>
                 </div>
                 <div class="mb-3">
-                    <label for="image" class="form-label">Image</label>
-                    <input type="file" name="image" class="form-control">
+                    <label for="images" class="form-label">Image</label>
+                    <input type="file" name="images" id="images" class="form-control">
                 </div>
-                <button type="submit" class="btn">Update Item</button>
-                <a href="{{ route('admin.galery') }}" class="btn">Back</a>
+                <button type="submit" class="btn btn-primary">Update Item</button>
+                <a href="{{ route('admin.galery') }}" class="btn btn-secondary">Back</a>
             </form>
         </div>
     </div>

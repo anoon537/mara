@@ -62,7 +62,7 @@ class GaleryController extends Controller
         // Validasi data
         $request->validate([
             'title' => 'required|string|max:255',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // Temukan item galeri yang akan diperbarui
@@ -71,34 +71,22 @@ class GaleryController extends Controller
         // Jika ada file gambar baru yang diunggah
         if ($request->hasFile('images')) {
             // Hapus gambar lama dari penyimpanan
-            $existingImages = Galery::where('title', $galeryItem->title)->get();
-            foreach ($existingImages as $image) {
-                // Convert the URL to a relative path
-                $oldImagePath = str_replace('/storage/', '', $image->image_url);
+            if ($galeryItem->image_url) {
+                $oldImagePath = str_replace('storage/', '', $galeryItem->image_url);
                 Storage::disk('public')->delete($oldImagePath);
-                $image->delete();
             }
 
-            // Iterasi semua file gambar yang diunggah
-            foreach ($request->file('images') as $image) {
-                // Simpan setiap gambar baru ke dalam penyimpanan
-                $imagePath = $image->store('gallery/' . $request->title, 'public');
-
-                // Simpan informasi galeri ke dalam database
-                Galery::create([
-                    'title' => $request->title,
-                    'image_url' => Storage::url($imagePath),
-                ]);
-            }
+            // Simpan gambar baru ke dalam penyimpanan
+            $imagePath = $request->file('images')->store('gallery/' . $request->title, 'public');
+            $galeryItem->image_url = $imagePath;
         }
 
         // Perbarui judul item galeri
         $galeryItem->title = $request->input('title');
         $galeryItem->save();
 
-        return redirect()->route('admin.galery')->with('success', 'Gallery item updated successfully.');
+        return redirect()->route('admin.galery')->with('success', 'Item galeri berhasil diperbarui.');
     }
-
 
     public function destroy($id)
     {

@@ -31,11 +31,32 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            // Fungsi untuk mengubah nomor telepon dari 08 ke +62
+                            function convertPhoneNumber($phone)
+                            {
+                                // Jika nomor telepon dimulai dengan 08, ganti dengan +62
+                                if (substr($phone, 0, 2) == '08') {
+                                    return '+62' . substr($phone, 1);
+                                }
+                                return $phone;
+                            }
+                        @endphp
                         @foreach ($bookings as $booking)
                             <tr>
                                 <td>#{{ $booking->id }}</td>
                                 <td>{{ $booking->user->name }}</td>
-                                <td>{{ $booking->user->phone }}</td>
+                                <td>
+                                    @php
+                                        // Mengonversi nomor telepon
+                                        $convertedPhone = $booking->user->phone
+                                            ? convertPhoneNumber($booking->user->phone)
+                                            : 'No Phone';
+                                    @endphp
+                                    <a class="text-success" href="https://wa.me/{{ $convertedPhone }}" target="_blank">
+                                        {{ $convertedPhone }}
+                                    </a>
+                                </td>
                                 <td>{{ $booking->photo_package->name }} | Extra Person {{ $booking->additional_people }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }} |

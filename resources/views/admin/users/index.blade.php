@@ -29,12 +29,31 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            // Fungsi untuk mengubah nomor telepon dari 08 ke +62
+                            function convertPhoneNumber($phone)
+                            {
+                                // Jika nomor telepon dimulai dengan 08, ganti dengan +62
+                                if (substr($phone, 0, 2) == '08') {
+                                    return '+62' . substr($phone, 1);
+                                }
+                                return $phone;
+                            }
+                        @endphp
                         @foreach ($users as $user)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->phone ?? 'No Phone' }}</td>
+                                <td>
+                                    @php
+                                        // Mengonversi nomor telepon
+                                        $convertedPhone = $user->phone ? convertPhoneNumber($user->phone) : 'No Phone';
+                                    @endphp
+                                    <a class="text-success" href="https://wa.me/{{ $convertedPhone }}" target="_blank">
+                                        {{ $convertedPhone }}
+                                    </a>
+                                </td>
                                 <td>{{ $user->role }}</td>
                                 <td>{{ $user->email_verified_at ? 'Yes' : 'No' }}</td>
                                 <td>{{ $user->status }}</td>
