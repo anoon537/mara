@@ -77,7 +77,7 @@
                                         target="_blank">
                                         <i class="fas fa-print"></i>
                                     </a>
-                                    @if ($directOrder->status == 'dp')
+                                    @if ($directOrder->status == 'dp 30%' || $directOrder->status == 'dp 50%')
                                         <form method="POST" action="{{ route('admin.do.complete', $directOrder->id) }}"
                                             class="d-inline complete-form">
                                             @csrf
