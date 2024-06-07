@@ -27,6 +27,12 @@ class Booking extends Model
         return $this->belongsTo(PhotoPackage::class);
     }
 
+    public function direct_order()
+    {
+        return $this->belongsTo(DirectOrder::class);
+    }
+
+
     public function payment()
     {
         return $this->hasOne(Payment::class);

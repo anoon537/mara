@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\PhotoPackage;
+use App\Models\DirectOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,7 +37,7 @@ class BookingController extends Controller
             'package_id' => 'required|exists:photo_packages,id',
             'booking_date' => 'required|date',
             'booking_time' => 'required|date_format:H:i',
-            'additional_people' => 'required|integer|min:0', // Validasi jumlah orang tambahan
+            'additional_people' => 'required|integer|min:0', // Validate additional people
         ]);
 
         $existingBooking = Booking::where('photo_package_id', $validatedData['package_id'])
@@ -44,30 +45,34 @@ class BookingController extends Controller
             ->where('booking_time', $validatedData['booking_time'])
             ->exists();
 
-        if ($existingBooking) {
-            return back()->withErrors(['booking_time' => 'Slot waktu ini sudah dipesan. Silakan pilih waktu lain.']);
+        $existingDirectOrder = DirectOrder::where('booking_date', $validatedData['booking_date'])
+            ->where('booking_time', $validatedData['booking_time'])
+            ->exists();
+
+        if ($existingBooking || $existingDirectOrder) {
+            return redirect()->back()->withErrors(['booking_time' => 'The selected time slot is already booked.']);
         }
 
         $package = PhotoPackage::findOrFail($validatedData['package_id']);
-        $original_price = $package->price; // Periksa harga asli
-        $additional_people = $validatedData['additional_people']; // Jumlah orang tambahan
-        $additional_price_per_person = 15000; // Harga tambahan per orang
-        $additional_cost = $additional_people * $additional_price_per_person; // Hitung biaya tambahan
-        $price = $original_price + $additional_cost; // Tambahkan biaya tambahan ke harga asli
+        $original_price = $package->price; // Check the original price
+        $additional_people = $validatedData['additional_people']; // Number of additional people
+        $additional_price_per_person = 15000; // Additional cost per person
+        $additional_cost = $additional_people * $additional_price_per_person; // Calculate additional cost
+        $price = $original_price + $additional_cost; // Add additional cost to original price
+
         $booking = new Booking();
-        $booking->id = $this->generateBookingId($validatedData['booking_date']); // ID booking
+        $booking->id = $this->generateBookingId($validatedData['booking_date']); // Booking ID
         $booking->user_id = Auth::id();
         $booking->photo_package_id = $package->id;
         $booking->booking_date = $validatedData['booking_date'];
         $booking->booking_time = $validatedData['booking_time'];
-        $booking->additional_people = $additional_people; // Simpan jumlah orang tambahan
-
-        $booking->price = $price; // Harga total
+        $booking->additional_people = $additional_people; // Save the number of additional people
+        $booking->price = $price; // Total price
         $booking->status = 'waiting for confirmation';
         $booking->save();
+
         return redirect()->route('booking.confirmation', ['booking_id' => $booking->id]);
     }
-
 
     public function confirmation($booking_id)
     {

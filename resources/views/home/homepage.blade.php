@@ -185,7 +185,8 @@
                                                 @endif
                                                 <div class="service-overlay">
                                                     <a class="btn btn-lg-square btn-outline-light rounded-circle"
-                                                        href="#"><i class="fa fa-link"></i></a>
+                                                        href="{{ route('home.detail', $package->id) }}"><i
+                                                            class="fa fa-link"></i></a>
                                                 </div>
                                             </div>
                                             <div class="text-center p-4">

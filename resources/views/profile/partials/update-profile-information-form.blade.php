@@ -56,11 +56,11 @@
         </div>
     @endif
 
-    <!-- Nomor Telepon (Non-editable) -->
+    <!-- Nomor Telepon (Bisa diedit) -->
     <div class="form-group mt-3">
         <label for="phone" class="font-weight-bold">{{ __('Phone Number') }}</label>
         <input type="text" name="phone" id="phone" class="form-control"
-            value="{{ old('phone', $user->phone) }}" required autofocus autocomplete="phone" readonly />
+            value="{{ old('phone', $user->phone) }}" required autofocus autocomplete="phone" />
     </div>
 
     <!-- Tombol Simpan -->

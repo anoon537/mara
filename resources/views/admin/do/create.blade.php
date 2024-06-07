@@ -43,8 +43,11 @@
                 <div class="mb-3">
                     <label for="booking_time">Booking Time</label>
                     <select name="booking_time" id="booking_time" class="form-control" required>
-                        @for ($hour = 9; $hour <= 18; $hour++)
-                            <option value="{{ $hour }}:00">{{ $hour }}:00 - {{ $hour + 1 }}:00</option>
+                        @for ($hour = 9; $hour < 18; $hour++)
+                            <option value="{{ str_pad($hour, 2, '0', STR_PAD_LEFT) }}:00">
+                                {{ str_pad($hour, 2, '0', STR_PAD_LEFT) }}:00 -
+                                {{ str_pad($hour + 1, 2, '0', STR_PAD_LEFT) }}:00
+                            </option>
                         @endfor
                     </select>
                 </div>
