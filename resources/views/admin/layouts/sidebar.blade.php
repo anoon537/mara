@@ -39,7 +39,7 @@
         <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.galery' ? 'active' : '' }}">
             <a href="{{ route('admin.galery') }}" class="sidebar-link">
                 <i class="fas fa-images"></i>
-                <span>Galery</span>
+                <span>Gallery</span>
             </a>
         </li>
         <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.bookings.index' ? 'active' : '' }}">

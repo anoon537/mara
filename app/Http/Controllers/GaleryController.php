@@ -11,7 +11,7 @@ class GaleryController extends Controller
 {
     public function index()
     {
-        $title = 'Galery';
+        $title = 'Gallery';
         $galeryItems = Galery::all();
 
         return view('admin.galery.index', compact('galeryItems', 'title'));
@@ -19,7 +19,7 @@ class GaleryController extends Controller
 
     public function create()
     {
-        $title = 'Add New Galery Item';
+        $title = 'Add New Gallery Item';
         return view('admin.galery.create', compact('title'));
     }
 
@@ -51,7 +51,7 @@ class GaleryController extends Controller
 
     public function edit($id)
     {
-        $title = 'Edit Galery Item';
+        $title = 'Edit Gallery Item';
         $galeryItem = Galery::findOrFail($id);
 
         return view('admin.galery.edit', compact('galeryItem', 'title'));

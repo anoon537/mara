@@ -14,7 +14,7 @@
             <a href="{{ route('produk') }}"
                 class="nav-item nav-link{{ request()->routeIs('produk') ? ' active' : '' }}">Photo Package</a>
             <a href="{{ route('galery') }}"
-                class="nav-item nav-link{{ request()->is('galery') ? ' active' : '' }}">Galery</a>
+                class="nav-item nav-link{{ request()->is('galery') ? ' active' : '' }}">Gallery</a>
             <a href="{{ route('contact') }}"
                 class="nav-item nav-link{{ request()->is('contact') ? ' active' : '' }}">Contact</a>
         </div>

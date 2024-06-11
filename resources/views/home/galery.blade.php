@@ -1,6 +1,6 @@
 @extends('layouts.app1') <!-- Layout utama -->
 
-@section('title', 'Galeri - Mara Studio')
+@section('title', 'Gallery - Mara Studio')
 
 @section('content')
     <!-- Spinner Start -->
@@ -25,7 +25,7 @@
                     <a href="{{ route('homepage') }}" class="text-secondary">Home</a> <!-- Link ke homepage -->
                 </li>
                 <li class="breadcrumb-item">
-                    <span class="text-secondary">Galery</span> <!-- Link ke daftar paket foto -->
+                    <span class="text-secondary">Gallery</span> <!-- Link ke daftar paket foto -->
                 </li>
             </ol>
         </nav>
