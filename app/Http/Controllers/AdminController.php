@@ -12,10 +12,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\BookingApproved;
 use Illuminate\Support\Facades\Mail;
-
+use App\Models\ActivityLog;
 
 class AdminController extends Controller
 {
+    protected function logActivity($action, $entity = null, $entityId = null, $details = null)
+    {
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => $action,
+            'entity' => $entity,
+            'entity_id' => $entityId,
+            'details' => $details,
+        ]);
+    }
+
+    public function indexLog(Request $request)
+    {
+        $title = 'Log Activity';
+        $query = ActivityLog::orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $keyword = $request->input('search');
+            $query->where(function ($q) use ($keyword) {
+                $q->where('created_at', 'LIKE', "%$keyword%")
+                    ->orWhere('details', 'LIKE', "%$keyword%");
+            });
+        }
+
+        $activityLogs = $query->get();
+        return view('admin.log.index', compact('activityLogs', 'title'));
+    }
+
     public function admindashboard()
     {
         $title = 'Dashboard';
@@ -25,19 +53,50 @@ class AdminController extends Controller
         $total_photo_packages = PhotoPackage::count();
         $total_galery = Galery::count();
         $total_bookings = Booking::count();
+        $total_logs = ActivityLog::count();
         $total_direct_orders = DirectOrder::count();
         $total_all_orders = $total_bookings + $total_direct_orders;
-        $pending_bookings = Booking::where('status', 'waiting for confirmation')->count(); // Booking yang masih pending
-        $approved_bookings = Booking::where('status', 'confirmed')->count(); // Booking yang telah disetujui
-        $completed_bookings = Booking::where('status', 'completed')->count(); // Booking yang telah selesai
-        $completed_do = DirectOrder::where('status', 'completed')->count(); // Booking yang telah selesai
+        $pending_bookings = Booking::where('status', 'waiting for confirmation')->count();
+        $approved_bookings = Booking::where('status', 'confirmed')->count();
+        $completed_bookings = Booking::where('status', 'completed')->count();
+        $completed_do = DirectOrder::where('status', 'completed')->count();
         $total_all_completed = $completed_bookings + $completed_do;
+
         $completedBookings = Booking::where('status', 'completed')->get();
         $completedDirectOrders = DirectOrder::where('status', 'completed')->get();
         $allCompletedOrders = $completedBookings->merge($completedDirectOrders);
-        $total_revenue = $allCompletedOrders->sum(function ($order) {
+
+        $total_revenue = $allCompletedOrders->whereBetween('created_at', [now()->subMonth(), now()])->sum(function ($order) {
             return $order->price ?? 0;
         });
+
+        $daily_revenue = $allCompletedOrders->whereBetween('created_at', [now()->subMonth(), now()])
+            ->groupBy(function ($order) {
+                return $order->created_at->format('Y-m-d');
+            })
+            ->map(function ($orders) {
+                return $orders->sum('price');
+            })
+            ->toArray();
+
+        $daily_bookings = Booking::where('status', 'completed')
+            ->whereBetween('created_at', [now()->subMonth(), now()])
+            ->get()
+            ->merge(DirectOrder::where('status', 'completed')->whereBetween('created_at', [now()->subMonth(), now()])->get())
+            ->groupBy(function ($booking) {
+                return $booking->created_at->format('Y-m-d');
+            })
+            ->map(function ($bookings) {
+                return $bookings->count();
+            })
+            ->toArray();
+
+        // Convert collections to arrays for Chart.js
+        $daily_revenue_labels = array_keys($daily_revenue);
+        $daily_revenue_data = array_values($daily_revenue);
+        $daily_bookings_labels = array_keys($daily_bookings);
+        $daily_bookings_data = array_values($daily_bookings);
+
         // Kirim data ke view
         return view('admin.index', compact(
             'title',
@@ -49,7 +108,12 @@ class AdminController extends Controller
             'pending_bookings',
             'approved_bookings',
             'total_all_completed',
-            'total_revenue'
+            'total_revenue',
+            'total_logs',
+            'daily_revenue_labels',
+            'daily_revenue_data',
+            'daily_bookings_labels',
+            'daily_bookings_data'
         ));
     }
 
@@ -86,6 +150,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:user,admin', // Tambahkan validasi untuk 'role'
         ]);
 
         User::create([
@@ -93,7 +158,7 @@ class AdminController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => bcrypt($validated['password']),
-            'role' => 'user', // Pastikan Anda menambahkan kolom 'role' pada model User
+            'role' => $validated['role'], // Gunakan nilai 'role' dari inputan
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User added successfully');
@@ -169,6 +234,7 @@ class AdminController extends Controller
 
         // Kirim email persetujuan ke pengguna
         Mail::to($booking->user->email)->send(new BookingApproved($booking));
+        $this->logActivity('confirmed', 'booking', null, 'confirm booking id ' . $payment->booking_id . '');
 
         return redirect()->route('admin.bookings.index', $booking->id)
             ->with('success', 'Pembayaran disetujui, status pemesanan diperbarui, dan email persetujuan telah dikirim.');
@@ -190,15 +256,20 @@ class AdminController extends Controller
         $booking->status = 'completed';
         $booking->save();
 
+        $booking_id = $id;
+        $this->logActivity('completed', 'booking', null, 'completed booking id ' . $booking_id . '');
+
         return redirect()->route('admin.bookings.index')->with('success', 'Booking marked as completed'); // Redirect
     }
-
 
     public function markPending($id)
     {
         $booking = Booking::findOrFail($id);
         $booking->status = 'waiting for confirmation';
         $booking->save();
+
+        $booking_id = $id;
+        $this->logActivity('pending', 'booking', null, 'pending booking id ' . $booking_id . '');
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking marked as pending'); // Redirect
     }
@@ -207,6 +278,9 @@ class AdminController extends Controller
     {
         $booking = Booking::findOrFail($id);
         $booking->delete();
+        $booking_id = $id;
+        $this->logActivity('deleted', 'booking', null, 'deleted booking id ' . $booking_id . '');
+
         return redirect()->route('admin.bookings.index')->with('success', 'User deleted successfully');
     }
 
@@ -346,6 +420,8 @@ class AdminController extends Controller
             'status' => $status,
         ]);
 
+        $this->logActivity('create', 'direct order', null, 'create offline transaction id ' . $directOrder->id . '');
+
         return redirect()->route('admin.do.index')->with('success', 'Direct Order berhasil dibuat.');
     }
 
@@ -360,6 +436,8 @@ class AdminController extends Controller
         $directOrder->status = 'completed';
         $directOrder->price = $totalPrice; // Set the price to the full amount including extra person cost
         $directOrder->save();
+
+        $this->logActivity('completed', 'direct order', null, 'completed offline transaction id ' . $directOrder->id . '');
 
         return redirect()->route('admin.do.index')->with('success', 'Order marked as completed.');
     }
@@ -391,6 +469,8 @@ class AdminController extends Controller
 
         // Menghapus DirectOrder
         $directOrder->delete();
+
+        $this->logActivity('deleted', 'direct order', null, 'deleted offline transaction id ' . $directOrder->id . '');
 
         // Redirect dengan pesan sukses
         return redirect()->route('admin.do.index')->with('success', 'Direct Order berhasil dihapus.');

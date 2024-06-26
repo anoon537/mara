@@ -8,6 +8,7 @@
         str_contains($currentRoute, 'bookings') => 'admin.bookings.index',
         str_contains($currentRoute, 'reports') => 'admin.reports.index',
         str_contains($currentRoute, 'do') => 'admin.do.index',
+        str_contains($currentRoute, 'log') => 'admin.log.index',
 
         default => 'admin.index',
     };
@@ -64,6 +65,12 @@
             <a href="{{ route('admin.users.index') }}" class="sidebar-link">
                 <i class="fas fa-users"></i>
                 <span>User Data</span>
+            </a>
+        </li>
+        <li class="sidebar-item {{ $sidebarActiveRoute == 'admin.log.index' ? 'active' : '' }}">
+            <a href="{{ route('admin.log.index') }}" class="sidebar-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Log Activity</span>
             </a>
         </li>
     </ul>

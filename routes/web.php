@@ -91,6 +91,9 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::delete('/direct-order/{id}', [AdminController::class, 'destroyDO'])->name('admin.do.destroy');
     Route::get('/direct-order/invoice/{id}', [AdminController::class, 'printInvoiceDo'])->name('admin.do.printInvoice');
     Route::patch('/direct-order/complete/{id}', [AdminController::class, 'completeDO'])->name('admin.do.complete');
+
+    // Log
+    Route::get('/log-activity', [AdminController::class, 'indexLog'])->name('admin.log.index');
 });
 
 //////////////// User Route ///////////////////

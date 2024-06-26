@@ -25,6 +25,13 @@
                     <label for="password_confirmation" class="form-label">Confirm Password</label>
                     <input type="password" name="password_confirmation" class="form-control" required>
                 </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select name="role" class="form-control" required>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn">Add User</button>
                 <a href="{{ route('admin.users.index') }}" class="btn">Back</a>
             </form>
