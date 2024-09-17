@@ -384,30 +384,28 @@ class AdminController extends Controller
             'extra_person' => 'required|integer|min:0',
             'booking_date' => 'required|date',
             'booking_time' => 'required|date_format:H:i',
-            'payment_type' => 'required|string|in:full,dp_30,dp_50',
+            'payment_type' => 'required|string|in:full,dp',
+            'dp_amount' => 'nullable|required_if:payment_type,dp|numeric|min:0', // Tambah validasi untuk DP
         ]);
 
+        // Perhitungan total harga
         $basePrice = $validatedData['harga'];
         $extraPersonCount = $validatedData['extra_person'];
-        $extraPersonCost = 20000; // Cost per extra person
+        $extraPersonCost = 20000; // Biaya per orang tambahan
         $totalPrice = $basePrice + ($extraPersonCost * $extraPersonCount);
 
         $paymentType = $validatedData['payment_type'];
-        switch ($paymentType) {
-            case 'dp_30':
-                $price = $totalPrice * 0.3;
-                $status = 'dp 30%';
-                break;
-            case 'dp_50':
-                $price = $totalPrice * 0.5;
-                $status = 'dp 50%';
-                break;
-            default:
-                $price = $totalPrice;
-                $status = 'completed';
-                break;
+        $price = $totalPrice; // Default harga adalah totalPrice
+        $status = 'completed'; // Default status adalah completed
+
+        if ($paymentType === 'dp') {
+            // Jika DP, gunakan nilai dp_amount dari input
+            $dpAmount = $validatedData['dp_amount'];
+            $price = min($dpAmount, $totalPrice); // DP tidak boleh lebih dari total harga
+            $status = 'DP';
         }
 
+        // Membuat Direct Order baru
         $directOrder = DirectOrder::create([
             'name' => $validatedData['name'],
             'phone' => $validatedData['phone'],
@@ -418,12 +416,16 @@ class AdminController extends Controller
             'booking_time' => $validatedData['booking_time'],
             'price' => $price,
             'status' => $status,
+            'dp_amount' => $dpAmount, // Simpan nilai DP jika ada
         ]);
 
+        // Mencatat aktivitas
         $this->logActivity('create', 'direct order', null, 'create offline transaction id ' . $directOrder->id . '');
 
+        // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('admin.do.index')->with('success', 'Direct Order berhasil dibuat.');
     }
+
 
     public function completeDO($id)
     {

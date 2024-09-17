@@ -28,7 +28,7 @@ class GaleryController extends Controller
         // Validasi data
         $request->validate([
             'title' => 'required|string|max:255',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:3000',
         ]);
 
         // Simpan judul galeri dari form

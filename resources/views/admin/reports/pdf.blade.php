@@ -32,8 +32,10 @@
                     <td>
                         @if (isset($order->photo_package))
                             {{ $order->photo_package->name }}
+                        @elseif (isset($order->directOrder))
+                            {{ $order->directOrder->paket }}
                         @else
-                            N/A <!-- Jika tidak ada paket foto -->
+                            {{ $order->paket ?? 'N/A' }}
                         @endif
                     </td>
                     <td>{{ \Carbon\Carbon::parse($order->booking_date)->format('d F Y') }}</td>

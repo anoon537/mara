@@ -56,9 +56,13 @@
                     <label for="payment_type">Payment Type</label>
                     <select name="payment_type" id="payment_type" class="form-control" required>
                         <option value="full">Full Payment</option>
-                        <option value="dp_30">DP 30%</option>
-                        <option value="dp_50">DP 50%</option>
+                        <option value="dp">DP</option>
                     </select>
+                    <div class="mt-3" id="dp_amount_wrapper" style="display:none;">
+                        <label for="dp_amount">DP Amount</label>
+                        <input type="number" id="dp_amount" name="dp_amount" class="form-control"
+                            placeholder="Enter DP amount" min="0">
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -66,4 +70,47 @@
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById('payment_type').addEventListener('change', function() {
+            var paymentType = this.value;
+            var dpWrapper = document.getElementById('dp_amount_wrapper');
+
+            if (paymentType === 'dp') {
+                dpWrapper.style.display = 'block';
+            } else {
+                dpWrapper.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const extraPersonInput = document.getElementById('extra_person');
+            const hargaInput = document.getElementById('harga');
+            const extraPersonCost = 20000; // Biaya per orang tambahan
+
+            // Fungsi untuk memperbarui harga
+            function updatePrice() {
+                const extraPersonCount = parseInt(extraPersonInput.value);
+                let hargaAwal = parseInt(hargaInput.getAttribute('data-original-price')) || parseInt(hargaInput
+                    .value); // Ambil harga awal dari input atau set ke atribut data
+                let totalPrice = hargaAwal + (extraPersonCost * extraPersonCount);
+
+                if (extraPersonCount > 0) {
+                    hargaInput.value = totalPrice;
+                    hargaInput.setAttribute('readonly', true); // Disable input
+                } else {
+                    hargaInput.removeAttribute('readonly'); // Enable input jika extra person 0
+                    hargaInput.value = hargaAwal; // Kembalikan harga awal
+                }
+            }
+
+            // Set harga awal sebagai atribut data pada input harga
+            hargaInput.addEventListener('input', function() {
+                hargaInput.setAttribute('data-original-price', hargaInput.value);
+            });
+
+            // Event listener untuk update harga ketika extra person berubah
+            extraPersonInput.addEventListener('input', updatePrice);
+        });
+        traPersonInput.addEventListener('input', updatePrice);
+    </script>
 @endsection

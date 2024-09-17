@@ -24,6 +24,7 @@ class DirectOrder extends Model
         'price',
         'harga',
         'status',
+        'dp_amount', // Jumlah DP
     ];
 
     public static function boot()
